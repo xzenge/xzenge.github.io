@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>基于Flink设计统一报警平台 - Hexo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="&amp;#x6700;&amp;#x8FD1;&amp;#x5728;&amp;#x6574;&amp;#x7406;&amp;#x540E;&amp;#x7AEF;&amp;#x5DF2;&amp;#x6709;&amp;#x7684;&amp;#x9519;&amp;#x8BEF;&amp;#x62A5;&amp;#x8B66;&amp;#xFF0C;&amp;#x4E3B;&amp;#x8981;&amp;#x5206;&amp;#x4E24;&amp;#x5927;&amp;#x7C7B;&amp;#xFF1A;  &amp;#x5F02;&amp;#x5E38;&amp;#x62A">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Flink设计统一报警平台">
+<meta property="og:url" content="http://example.com/2020/05/16/%E5%9F%BA%E4%BA%8EFlink%E8%AE%BE%E8%AE%A1%E7%BB%9F%E4%B8%80%E6%8A%A5%E8%AD%A6%E5%B9%B3%E5%8F%B0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="&amp;#x6700;&amp;#x8FD1;&amp;#x5728;&amp;#x6574;&amp;#x7406;&amp;#x540E;&amp;#x7AEF;&amp;#x5DF2;&amp;#x6709;&amp;#x7684;&amp;#x9519;&amp;#x8BEF;&amp;#x62A5;&amp;#x8B66;&amp;#xFF0C;&amp;#x4E3B;&amp;#x8981;&amp;#x5206;&amp;#x4E24;&amp;#x5927;&amp;#x7C7B;&amp;#xFF1A;  &amp;#x5F02;&amp;#x5E38;&amp;#x62A">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-16T09:24:48.000Z">
+<meta property="article:modified_time" content="2020-12-14T09:51:24.020Z">
+<meta property="article:author" content="Xiang Shi">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Flink">
+<meta property="article:tag" content="监控">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+<link rel="icon" href="/favicon.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147240985-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-147240985-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                <img src="/images/logo.png" alt="" height="28">
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories">Categories</a>
+            
+            <a class="navbar-item "
+               href="/tags">Tag</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="搜索" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/nadia-repository">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            基于Flink设计统一报警平台
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2020-05-16T09:24:48.000Z" itemprop="datePublished">5月 16 2020</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Technology/">Technology</a>
+        </span>
+        
+        
+        <span class="column is-narrow">
+            
+            
+            8 分钟 读完 (约 1245 字)
+        </span>
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>&#x6700;&#x8FD1;&#x5728;&#x6574;&#x7406;&#x540E;&#x7AEF;&#x5DF2;&#x6709;&#x7684;&#x9519;&#x8BEF;&#x62A5;&#x8B66;&#xFF0C;&#x4E3B;&#x8981;&#x5206;&#x4E24;&#x5927;&#x7C7B;&#xFF1A;</p>
+<ol>
+<li>&#x5F02;&#x5E38;&#x62A5;&#x8B66;<ul>
+<li>&#x57FA;&#x4E8E;&#x76D1;&#x63A7;&#x7CFB;&#x7EDF;&#x3002;&#x5982;CAT&#x3001;pingpong&#x3001;skywalking&#x7B49;APM&#x7CFB;&#x7EDF;&#x7684;&#x9519;&#x8BEF;&#x5F02;&#x5E38;&#x76D1;&#x63A7;&#x3002;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x9488;&#x5BF9;&#x5F02;&#x5E38;&#x7C7B;&#x578B;&#xFF0C;&#x5236;&#x5B9A;&#x76F8;&#x5E94;&#x7684;&#x9608;&#x503C;&#x3002;&#x5BF9;&#x4EE3;&#x7801;&#x8FD0;&#x884C;&#x65F6;&#x5F02;&#x5E38;&#x3001;sql&#x5F02;&#x5E38;&#x3001;&#x7F51;&#x7EDC;&#x5F02;&#x5E38;&#x7B49;&#x8FDB;&#x884C;&#x6307;&#x6807;&#x76D1;&#x63A7;&#x3002;&#x5F53;&#x5F02;&#x5E38;&#x8D85;&#x8FC7;&#x6307;&#x5B9A;&#x9608;&#x503C;&#x65F6;&#x63A8;&#x9001;&#x5F02;&#x5E38;&#x4FE1;&#x606F;&#x3002;&#x6211;&#x4EEC;&#x7684;&#x540E;&#x7AEF;&#x7CFB;&#x7EDF;&#x662F;&#x57FA;&#x4E8E;CAT&#x8FDB;&#x884C;&#x76D1;&#x63A7;&#xFF0C;&#x76D1;&#x63A7;&#x7684;&#x6307;&#x6807;&#x548C;&#x914D;&#x7F6E;&#x90FD;&#x8981;&#x4EBA;&#x4E3A;&#x8FDB;&#x884C;&#x914D;&#x7F6E;&#xFF0C;&#x5F02;&#x5E38;&#x4FE1;&#x606F;&#x7684;&#x63A8;&#x9001;&#x9700;&#x8981;&#x5F00;&#x53D1;&#x5E76;&#x4E0E;CAT&#x5BF9;&#x63A5;&#xFF0C;&#x540C;&#x65F6;&#x5FAE;&#x4FE1;&#x63A8;&#x9001;&#x8FD9;&#x5757;&#x5F02;&#x5E38;&#x4FE1;&#x606F;&#x6709;&#x9650;&#xFF0C;&#x5F80;&#x5F80;&#x8981;&#x901A;&#x8FC7;&#x90AE;&#x4EF6;&#x544A;&#x8B66;&#x548C;&#x767B;&#x5F55;CAT&#x5E73;&#x53F0;&#x67E5;&#x770B;&#x624D;&#x80FD;&#x5927;&#x6982;&#x4E86;&#x89E3;&#x9519;&#x8BEF;&#x7684;&#x7C7B;&#x578B;&#x3002;&#x8FD9;&#x70B9;&#x957F;&#x671F;&#x88AB;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x8BDF;&#x75C5;&#xFF0C;&#x867D;&#x7136;&#x6211;&#x4EEC;&#x80FD;&#x591F;&#x901A;&#x8FC7;&#x4FEE;&#x6539;CAT&#x7684;&#x6E90;&#x7801;&#x6765;&#x6539;&#x5584;&#x4E0A;&#x8BC9;&#x95EE;&#x9898;&#x3002;&#x4F46;&#x5BF9;&#x4E8E;&#x7A0B;&#x5E8F;&#x5458;&#x6765;&#x8BF4;&#xFF0C;&#x66F4;&#x52A0;&#x76F4;&#x89C2;&#x7684;&#x5806;&#x9519;&#x8BEF;&#x4FE1;&#x606F;&#x8FDB;&#x884C;&#x5904;&#x7406;&#x662F;&#x518D;&#x597D;&#x4E0D;&#x8FC7;&#x7684;&#x4E8B;&#x60C5;&#x3002;</li>
+<li>&#x57FA;&#x4E8E;&#x7CFB;&#x7EDF;&#x6307;&#x6807;&#x3002;&#x6709;&#x522B;&#x4E8E;&#x670D;&#x52A1;&#x5F02;&#x5E38;&#xFF0C;&#x7CFB;&#x7EDF;&#x6307;&#x6807;&#x6709;&#x66F4;&#x7075;&#x6D3B;&#x7684;&#x91C7;&#x96C6;&#x65B9;&#x5F0F;&#x3002;&#x6211;&#x4EEC;&#x91C7;&#x7528;&#x4E86;Spring Merics&#xFF0C;&#x57FA;&#x4E8E;Prometheus&#x642D;&#x5EFA;&#x4E86;&#x7CFB;&#x7EDF;&#x6307;&#x6807;&#x7684;&#x76D1;&#x63A7;&#x4F53;&#x7CFB;&#xFF0C;&#x7ED3;&#x5408;Grafana&#x5C06;&#x8FD1;&#x5B9E;&#x65F6;&#x7684;&#x7CFB;&#x7EDF;&#x6307;&#x6807;&#x5C55;&#x73B0;&#x81F3;&#x5C4F;&#x5E55;&#x3002;&#x540C;&#x6837;&#x9047;&#x5230;&#x7CFB;&#x7EDF;&#x6307;&#x6807;&#x5F02;&#x5E38;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5982;Heap&#x7A7A;&#x95F4;&#x4F7F;&#x7528;&#x91CF;&#x5F02;&#x5E38;&#xFF0C;CPU&#x98D9;&#x9AD8;&#xFF0C;&#x5185;&#x5B58;&#x544A;&#x6025;&#x7B49;&#x60C5;&#x51B5;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x8FC7;Grafana&#x7684;&#x81EA;&#x5B9A;&#x4E49;&#x544A;&#x8B66;&#x5C06;&#x9519;&#x8BEF;&#x63A8;&#x9001;&#x7ED9;&#x76F8;&#x5173;&#x5F00;&#x53D1;&#x3002;<a id="more"></a></li>
+</ul>
+</li>
+<li>&#x4E1A;&#x52A1;&#x544A;&#x8B66;<ul>
+<li>&#x57FA;&#x4E8E;&#x5B9E;&#x65F6;&#x6570;&#x636E;&#x3002;&#x901A;&#x8FC7;&#x5BF9;&#x4E1A;&#x52A1;&#x6D41;&#x7A0B;&#x7684;&#x57CB;&#x70B9;&#xFF0C;&#x5C06;&#x91C7;&#x96C6;&#x7684;&#x5B9E;&#x65F6;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x8BA1;&#x7B97;&#x6BD4;&#x8F83;&#x3002;&#x5E76;&#x5C06;&#x5F02;&#x5E38;&#x7684;&#x4E1A;&#x52A1;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x63A8;&#x9001;&#x544A;&#x8B66;&#x3002;</li>
+<li>&#x57FA;&#x4E8E;&#x79BB;&#x7EBF;&#x6570;&#x636E;&#x3002;&#x5B9A;&#x65F6;&#x5206;&#x6790;&#x79BB;&#x7EBF;&#x6570;&#x636E;&#xFF0C;&#x63A8;&#x9001;&#x5F02;&#x5E38;&#x4E1A;&#x52A1;&#x6570;&#x636E;&#x544A;&#x8B66;&#x3002;</li>
+</ul>
+</li>
+</ol>
+<p>&#x4EE5;&#x4E0A;&#x5927;&#x6982;&#x4ECB;&#x7ECD;&#x4E86;&#x76D1;&#x63A7;&#x7684;&#x51E0;&#x4E2A;&#x65B9;&#x5411;&#x53CA;&#x5176;&#x843D;&#x5730;&#x65B9;&#x5F0F;&#xFF0C;&#x901A;&#x8FC7;&#x5206;&#x6790;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5C06;&#x6574;&#x4E2A;&#x76D1;&#x63A7;&#x884C;&#x4E3A;&#x62BD;&#x8C61;&#x6210;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x6D41;&#xFF1A;&#x76D1;&#x63A7;&#x6570;&#x636E;&#x6E90;&#x2013;&gt; &#x76D1;&#x63A7;&#x6570;&#x636E;&#x6E05;&#x6D17; &#x2013;&gt; &#x76D1;&#x63A7;&#x6570;&#x636E;&#x8BA1;&#x7B97; &#x2013;&gt; &#x63A8;&#x9001;&#x62A5;&#x8B66;</p>
+<p>&#x57FA;&#x4E8E;&#x8FD9;&#x4E2A;&#x7ED3;&#x8BBA;&#xFF0C;&#x6B63;&#x5F0F;&#x6211;&#x4EEC;&#x4F1A;&#x5F00;&#x59CB;&#x7814;&#x7A76;&#x5E76;&#x63A2;&#x7D22;Flink&#x7684;&#x5951;&#x673A;&#x3002;&#x9762;&#x5BF9;&#x76EE;&#x524D;&#x540E;&#x7AEF;&#x5F62;&#x5F62;&#x8272;&#x8272;&#x7684;&#x76D1;&#x63A7;&#x65B9;&#x5F0F;&#x53CA;&#x5904;&#x7406;&#x6D41;&#x7A0B;&#xFF0C;&#x6BCF;&#x4E00;&#x4E2A;&#x90E8;&#x5206;&#x90FD;&#x662F;&#x5272;&#x88C2;&#x7684;&#xFF0C;&#x65E0;&#x6CD5;&#x7EDF;&#x4E00;&#x601D;&#x60F3;&#x7684;&#x3002;&#x9762;&#x5BF9;&#x4E0D;&#x540C;&#x7684;&#x76D1;&#x63A7;&#x573A;&#x666F;&#x65F6;&#xFF0C;&#x6211;&#x4EEC;&#x8981;&#x8003;&#x8651;&#x4E0D;&#x540C;&#x63A5;&#x5904;&#x7406;&#x624B;&#x6BB5;&#xFF0C;&#x8FD9;&#x53D8;&#x76F8;&#x7684;&#x589E;&#x52A0;&#x4E86;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x7684;&#x4EBA;&#x529B;&#x8D44;&#x6E90;&#x3002;</p>
+<p>&#x4E3A;&#x6B64;&#x6211;&#x4EEC;&#x8003;&#x8651;&#x600E;&#x6837;&#x53EF;&#x4EE5;&#x6700;&#x5927;&#x9650;&#x5EA6;&#x7684;&#x7EDF;&#x4E00;&#x5404;&#x4E2A;&#x62A5;&#x8B66;&#x7684;&#x6D41;&#x7A0B;&#xFF0C;&#x5E76;&#x63D0;&#x4F9B;&#x4E00;&#x4E2A;&#x7EDF;&#x4E00;&#x7684;&#x5904;&#x7406;&#x5E73;&#x53F0;&#x3002;&#x8FD9;&#x4E2A;&#x65F6;&#x5019;Flink&#x6765;&#x5230;&#x4E86;&#x6211;&#x4EEC;&#x9762;&#x524D;&#x3002;</p>
+<p>Flink&#x662F;&#x4EC0;&#x4E48;&#x76F8;&#x6BD4;&#x4E0D;&#x7528;&#x4ECB;&#x7ECD;&#x4E86;&#xFF0C;&#x5B98;&#x7F51;&#x5DF2;&#x7ECF;&#x4ECB;&#x7ECD;&#x7684;&#x76F8;&#x5F53;&#x8BE6;&#x7EC6;&#x4E86;&#xFF1A;<br><a target="_blank" rel="noopener" href="https://flink.apache.org/">https://flink.apache.org/</a></p>
+<p>&#x4E0A;&#x9762;&#x62BD;&#x8C61;&#x7684;&#x76D1;&#x63A7;&#x6D41;&#x7A0B;&#xFF1A;&#x76D1;&#x63A7;&#x6570;&#x636E;&#x6E90;&#x2013;&gt; &#x76D1;&#x63A7;&#x6570;&#x636E;&#x6E05;&#x6D17; &#x2013;&gt; &#x76D1;&#x63A7;&#x6570;&#x636E;&#x8BA1;&#x7B97; &#x2013;&gt; &#x63A8;&#x9001;&#x62A5;&#x8B66;</p>
+<p>&#x7528;Flink&#x53EF;&#x4EE5;&#x8868;&#x793A;&#x4E3A;&#xFF1A;Source&#x2013;&gt; ETL&#x2013;&gt; Operator&#x2013;&gt; Sink</p>
+<p>&#x7ED3;&#x5408;&#x4E0A;&#x9762;&#x7684;&#x5206;&#x6790;&#xFF0C;&#x6211;&#x6253;&#x7B97;&#x5148;&#x4ECE;&#x63A8;&#x9001;&#x62A5;&#x8B66;&#x529F;&#x80FD;&#x5165;&#x624B;&#x3002;&#x5229;&#x7528;Flink&#x7684;&#x6D41;&#x5F0F;&#x5904;&#x7406;&#x80FD;&#x529B;&#xFF0C;&#x5F00;&#x53D1;&#x4E00;&#x4E2A;&#x7EDF;&#x4E00;&#x7684;&#x62A5;&#x8B66;&#x51FA;&#x53E3;&#x4EFB;&#x52A1;&#x3002;</p>
+<h4 id="&#x6570;&#x636E;&#x6E90;"><a href="#&#x6570;&#x636E;&#x6E90;" class="headerlink" title="&#x6570;&#x636E;&#x6E90;"></a>&#x6570;&#x636E;&#x6E90;</h4><p>&#x6570;&#x636E;&#x6E90;&#x6211;&#x4EEC;&#x6253;&#x7B97;&#x91C7;&#x7528;RocketMQ&#x3002;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x7EDF;&#x4E00;&#x7684;&#x62A5;&#x8B66;&#x63A8;&#x9001;Topic&#xFF0C;&#x5B9A;&#x4E49;&#x7EDF;&#x4E00;&#x7684;&#x62A5;&#x8B66;&#x6D88;&#x606F;&#x683C;&#x5F0F;&#x3002;</p>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>AlertWechatTopic</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Body</td>
+<td>{&#x201C;alertMsg&#x201D;:&#x201D;&#x201D;,<br>&#x201C;alertTo&#x201D;:&#x201D;&#x201D;,<br>&#x201C;bizType&#x201D;:&#x201D;&#x201D;<br> }</td>
+</tr>
+</tbody></table>
+<h4 id="&#x7B97;&#x5B50;"><a href="#&#x7B97;&#x5B50;" class="headerlink" title="&#x7B97;&#x5B50;"></a>&#x7B97;&#x5B50;</h4><ol>
+<li><p>&#x5E94;&#x7528;RocketMQ-Extend&#x63D0;&#x4F9B;&#x7684;Flink&#x652F;&#x6301;&#xFF0C;&#x5B98;&#x65B9;&#x7EE7;&#x627F;&#x4E86;RichParallelSourceFunction&#x7C7B;&#x3002;&#x5B9E;&#x73B0;&#x4E86;&#x6CE8;&#x518C;Consumer&#xFF0C;&#x62C9;&#x53D6;Topic&#x4E0B;&#x7684;&#x6D88;&#x606F;&#x3002;</p>
+</li>
+<li><p>&#x5B98;&#x65B9;&#x63D0;&#x4F9B;&#x7684;&#x5E8F;&#x5217;&#x5316;&#x65B9;&#x6CD5;&#x4EC5;&#x6709;&#x9488;&#x5BF9;key&#x548C;value&#x7684;String&#x5E8F;&#x5217;&#x5316;SimpleKeyValueDeserializationSchema&#x3002;&#x5728;&#x8FD0;&#x7528;&#x4E0A;&#x662F;&#x6EE1;&#x8DB3;&#x7684;&#xFF0C;&#x4F46;&#x662F;&#x540E;&#x671F;&#x7F16;&#x7A0B;&#x4E0A;&#x53EF;&#x80FD;&#x81EA;&#x5B9A;&#x4E49;&#x4F1A;&#x66F4;&#x52A0;&#x65B9;&#x4FBF;&#x3002;&#x540E;&#x671F;&#x6211;&#x4EEC;&#x4F1A;&#x8003;&#x8651;&#x6269;&#x5C55;&#x5E8F;&#x5217;&#x5316;&#x65B9;&#x5F0F;&#x6216;&#x662F;&#x5B98;&#x65B9;&#x63D0;&#x4F9B;&#x7684;&#x62C9;&#x53D6;&#x6D88;&#x606F;&#x6E90;&#x7801;&#xFF0C;&#x505A;&#x5230;&#x66F4;&#x7075;&#x6D3B;&#x7684;&#x6D88;&#x606F;&#x683C;&#x5F0F;&#x4F20;&#x8F93;&#x3002;</p>
+</li>
+<li><p>&#x5C06;&#x4ECE;RocketMQ&#x4E2D;&#x62C9;&#x53D6;&#x5230;&#x7684;&#x6D88;&#x606F;&#x505A;Map&#xFF0C;&#x683C;&#x5F0F;&#x5316;&#x6210;&#x6211;&#x4EEC;&#x5E0C;&#x671B;&#x7684;&#x7ED3;&#x6784;&#x3002;</p>
+</li>
+</ol>
+<figure class="highlight java hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>{</span><br><span class="line">        ParameterTool parameterTool = ParameterTool.fromArgs(args);</span><br><span class="line">        String nameserverAddress = parameterTool.get(<span class="hljs-string">&quot;nameserverAddress&quot;</span>);</span><br><span class="line">        String consumerGroup = parameterTool.get(<span class="hljs-string">&quot;consumerGroup&quot;</span>);</span><br><span class="line">        String consumerTopic = parameterTool.get(<span class="hljs-string">&quot;consumerTopic&quot;</span>);</span><br><span class="line"></span><br><span class="line">        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">        SendWechatService sendWechatService = <span class="hljs-keyword">new</span> SendWechatService();</span><br><span class="line">        <span class="hljs-comment">// enable checkpoint</span></span><br><span class="line">        env.enableCheckpointing(<span class="hljs-number">3000</span>);</span><br><span class="line"></span><br><span class="line">        Properties consumerProps = <span class="hljs-keyword">new</span> Properties();</span><br><span class="line">        consumerProps.setProperty(RocketMQConfig.NAME_SERVER_ADDR, nameserverAddress);</span><br><span class="line">        consumerProps.setProperty(RocketMQConfig.CONSUMER_GROUP, consumerGroup);</span><br><span class="line">        consumerProps.setProperty(RocketMQConfig.CONSUMER_TOPIC, consumerTopic);</span><br><span class="line"></span><br><span class="line">        env.addSource(<span class="hljs-keyword">new</span> RocketMQSource&lt;Map&gt;(<span class="hljs-keyword">new</span> SimpleKeyValueDeserializationSchema(<span class="hljs-keyword">null</span>,<span class="hljs-string">&quot;body&quot;</span>),consumerProps))</span><br><span class="line">                .name(<span class="hljs-string">&quot;rocketmq-source&quot;</span>)</span><br><span class="line">                .map(<span class="hljs-keyword">new</span> MapFunction&lt;Map, WechatAlertInfo&gt;() {</span><br><span class="line">                    <span class="hljs-meta">@Override</span></span><br><span class="line">                    <span class="hljs-function"><span class="hljs-keyword">public</span> WechatAlertInfo <span class="hljs-title">map</span><span class="hljs-params">(Map value)</span> <span class="hljs-keyword">throws</span> Exception </span>{</span><br><span class="line">                        String body = (String)value.get(<span class="hljs-string">&quot;body&quot;</span>);</span><br><span class="line">                        WechatAlertInfo wechatAlertInfo = JSONObject.parseObject(body, WechatAlertInfo.class);</span><br><span class="line">                        <span class="hljs-keyword">return</span> wechatAlertInfo;</span><br><span class="line">                    }</span><br><span class="line">                }).addSink(<span class="hljs-keyword">new</span> WechatSink())</span><br><span class="line">                .name(<span class="hljs-string">&quot;wechat sink&quot;</span>);</span><br><span class="line">        <span class="hljs-keyword">try</span> {</span><br><span class="line">            env.execute(<span class="hljs-string">&quot;send to wechat&quot;</span>);</span><br><span class="line">        } <span class="hljs-keyword">catch</span> (Exception e) {</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        }</span><br><span class="line">    }</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="4">
+<li>&#x5C06;&#x683C;&#x5F0F;&#x5316;&#x5B8C;&#x6210;&#x7684;&#x6570;&#x636E;&#x6E90;&#x8F93;&#x51FA;&#x5230;&#x6211;&#x4EEC;&#x81EA;&#x5B9A;&#x4E49;&#x7684;Sink&#x4E2D;&#xFF0C;&#x8BE5;sink&#x7684;&#x529F;&#x80FD;&#x4E3A;&#x53D1;&#x9001;wechat&#x4FE1;&#x606F;&#x3002;</li>
+</ol>
+<figure class="highlight java hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">WechatSink</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">RichSinkFunction</span>&lt;<span class="hljs-title">WechatAlertInfo</span>&gt; </span>{</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">transient</span> SendWechatService sendWechatService;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">open</span><span class="hljs-params">(Configuration parameters)</span> <span class="hljs-keyword">throws</span> Exception </span>{</span><br><span class="line">        sendWechatService = <span class="hljs-keyword">new</span> SendWechatService();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">invoke</span><span class="hljs-params">(WechatAlertInfo value, Context context)</span> <span class="hljs-keyword">throws</span> Exception </span>{</span><br><span class="line">        sendWechatService.sendMessage(value.getAlertMsg(),value.getAlertTo());</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>&#x4EE5;&#x4E0A;&#x6211;&#x4EEC;&#x5C31;&#x7B80;&#x5355;&#x7684;&#x5B9E;&#x73B0;&#x4E86;&#x5C06;RocketMQ&#x4E2D;&#x7684;&#x62A5;&#x8B66;&#x6D88;&#x606F;&#x63A8;&#x9001;&#x81F3;wechat&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x4E0B;&#x6B21;&#x6211;&#x4EEC;&#x628A;&#x4EE3;&#x7801;&#x8DD1;&#x8D77;&#x6765;&#x770B;&#x770B;&#x3002;</p>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Java/">#Java</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Flink/">#Flink</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/%E7%9B%91%E6%8E%A7/">#监控</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2020/05/21/%E5%9F%BA%E4%BA%8EFlink%E6%8E%A8%E9%80%81%E6%8A%A5%E8%AD%A6%E4%BF%A1%E6%81%AF-%E6%B5%8B%E8%AF%95/">基于Flink推送报警信息-测试</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2020/04/18/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%A3%E7%A0%81%E7%AF%87/">我为什么会手撸一个配置中心-代码篇</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+<div class="sharebox">
+    
+<div class="addthis_inline_share_toolbox"></div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5d71c42eb9261743"></script>
+
+</div>
+
+
+
+<div class="comments">
+    <h3 class="title is-4">评论</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://example.com/2020/05/16/%E5%9F%BA%E4%BA%8EFlink%E8%AE%BE%E8%AE%A1%E7%BB%9F%E4%B8%80%E6%8A%A5%E8%AD%A6%E5%B9%B3%E5%8F%B0/';
+        this.page.identifier = '2020/05/16/基于Flink设计统一报警平台/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'xzenge' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2020 Xiang Shi&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/nadia-repository">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+    <style>
+        .hljs {
+            position: relative;
+        }
+
+        .hljs .clipboard-btn {
+            float: right;
+            color: #9a9a9a;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hljs .clipboard-btn:hover {
+          color: #8a8a8a;
+        }
+
+        .hljs > .clipboard-btn {
+            display: none;
+            position: absolute;
+            right: 4px;
+            top: 4px;
+        }
+
+        .hljs:hover > .clipboard-btn {
+            display: inline;
+        }
+
+        .hljs > figcaption > .clipboard-btn {
+            margin-right: 4px;
+        }
+    </style>
+    <script>
+      $(document).ready(function () {
+        $('figure.hljs').each(function(i, figure) {
+          var codeId = 'code-' + i;
+          var code = figure.querySelector('.code');
+          var copyButton = $('<button>Copy <i class="far fa-clipboard"></i></button>');
+          code.id = codeId;
+          copyButton.addClass('clipboard-btn');
+          copyButton.attr('data-clipboard-target-id', codeId);
+
+          var figcaption = figure.querySelector('figcaption');
+
+          if (figcaption) {
+            figcaption.append(copyButton[0]);
+          } else {
+            figure.prepend(copyButton[0]);
+          }
+        })
+
+        var clipboard = new ClipboardJS('.clipboard-btn', {
+          target: function(trigger) {
+            return document.getElementById(trigger.getAttribute('data-clipboard-target-id'));
+          }
+        });
+        clipboard.on('success', function(e) {
+          e.clearSelection();
+        })
+      })
+    </script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="站内搜索" />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

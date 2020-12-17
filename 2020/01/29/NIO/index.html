@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>NIO - Hexo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="Buffer&amp;#x8D1F;&amp;#x8D23;&amp;#x6570;&amp;#x636E;&amp;#x7684;&amp;#x5B58;&amp;#x53D6;&amp;#x3002;&amp;#x7F13;&amp;#x51B2;&amp;#x533A;&amp;#x53CA;&amp;#x65F6;&amp;#x6570;&amp;#x7EC4;&amp;#x3002;&amp;#x7528;&amp;#x4E8E;&amp;#x5B58;&amp;#x50A8;&amp;#x4E0D;&amp;#x540C;&amp;#x6570;&amp;#x636E;&amp;#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NIO">
+<meta property="og:url" content="http://example.com/2020/01/29/NIO/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Buffer&amp;#x8D1F;&amp;#x8D23;&amp;#x6570;&amp;#x636E;&amp;#x7684;&amp;#x5B58;&amp;#x53D6;&amp;#x3002;&amp;#x7F13;&amp;#x51B2;&amp;#x533A;&amp;#x53CA;&amp;#x65F6;&amp;#x6570;&amp;#x7EC4;&amp;#x3002;&amp;#x7528;&amp;#x4E8E;&amp;#x5B58;&amp;#x50A8;&amp;#x4E0D;&amp;#x540C;&amp;#x6570;&amp;#x636E;&amp;#">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-29T12:52:57.000Z">
+<meta property="article:modified_time" content="2020-12-14T09:51:24.008Z">
+<meta property="article:author" content="Xiang Shi">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="IO">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+<link rel="icon" href="/favicon.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147240985-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-147240985-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                <img src="/images/logo.png" alt="" height="28">
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories">Categories</a>
+            
+            <a class="navbar-item "
+               href="/tags">Tag</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="搜索" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/nadia-repository">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            NIO
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2020-01-29T12:52:57.000Z" itemprop="datePublished">1月 29 2020</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Technology/">Technology</a>
+        </span>
+        
+        
+        <span class="column is-narrow">
+            
+            
+            4 分钟 读完 (约 573 字)
+        </span>
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><h2 id="Buffer"><a href="#Buffer" class="headerlink" title="Buffer"></a>Buffer</h2><p>&#x8D1F;&#x8D23;&#x6570;&#x636E;&#x7684;&#x5B58;&#x53D6;&#x3002;&#x7F13;&#x51B2;&#x533A;&#x53CA;&#x65F6;&#x6570;&#x7EC4;&#x3002;&#x7528;&#x4E8E;&#x5B58;&#x50A8;&#x4E0D;&#x540C;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x7684;&#x6570;&#x636E;&#x3002;&#xFF08;boolean&#x9664;&#x5916;&#xFF09;<br>&#x901A;&#x8FC7;allocate()&#x83B7;&#x53D6;&#x7F13;&#x51B2;&#x533A;<br>put()&#xFF0C;get()<br>&#x7F13;&#x51B2;&#x533A;&#x4E2D;&#x7684;&#x6838;&#x5FC3;&#x5C5E;&#x6027;<br>capacity:&#x5BB9;&#x91CF;&#xFF0C;&#x8868;&#x793A;&#x7F13;&#x51B2;&#x533A;&#x4E2D;&#x6700;&#x5927;&#x5B58;&#x50A8;&#x6570;&#x636E;&#x7684;&#x5BB9;&#x91CF;&#x3002;&#x4E00;&#x65E6;&#x7533;&#x660E;&#x4E0D;&#x80FD;&#x6539;&#x53D8;&#x3002;<br>limit:&#x754C;&#x9650;&#xFF0C;&#x8868;&#x793A;&#x7F13;&#x51B2;&#x533A;&#x4E2D;&#x53EF;&#x4EE5;&#x64CD;&#x4F5C;&#x6570;&#x636E;&#x7684;&#x5927;&#x5C0F;&#x3002;limit&#x540E;&#x7AEF;&#x7684;&#x6570;&#x636E;&#x4E0D;&#x80FD;&#x8FDB;&#x884C;&#x8BFB;&#x5199;&#x3002;<br>position:&#x4F4D;&#x7F6E;&#xFF0C;&#x8868;&#x793A;&#x7F13;&#x51B2;&#x533A;&#x4E2D;&#x6B63;&#x5728;&#x64CD;&#x4F5C;&#x7684;&#x4F4D;&#x7F6E;&#x3002;<br>0&lt;=mark&lt;=posiotion&lt;=limit&lt;=capacity<br>flip() &#x5207;&#x6362;&#x8BFB;&#x53D6;&#x6570;&#x636E;&#x6A21;&#x5F0F;<br>rewind() &#x53EF;&#x91CD;&#x590D;&#x8BFB;<br>clear()&#x6E05;&#x7A7A;&#x7F13;&#x51B2;&#x533A;&#xFF0C;&#x6570;&#x636E;&#x5E76;&#x6CA1;&#x6709;&#x88AB;&#x6E05;&#x7A7A;<br>mark:&#x6807;&#x8BB0;&#xFF0C;&#x8868;&#x793A;&#x8BB0;&#x5F55;&#x5F53;&#x524D;position&#x7684;&#x4F4D;&#x7F6E;&#x3002;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;reset()&#x6062;&#x590D;&#x5230;mark&#x7684;&#x4F4D;&#x7F6E;&#x3002;<br>hasRemaining()&#xFF1A;&#x7F13;&#x51B2;&#x533A;&#x4E2D;&#x662F;&#x5426;&#x8FD8;&#x6709;&#x5269;&#x4F59;&#x7684;&#x6570;&#x636E;</p>
+<a id="more"></a>
+<h3 id="&#x5B9E;&#x73B0;&#x7C7B;"><a href="#&#x5B9E;&#x73B0;&#x7C7B;" class="headerlink" title="&#x5B9E;&#x73B0;&#x7C7B;"></a>&#x5B9E;&#x73B0;&#x7C7B;</h3><ul>
+<li>ByteBuffer</li>
+<li>CharBuffer</li>
+<li>ShortBuffer</li>
+<li>IntBuffer</li>
+<li>LongBuffer</li>
+<li>FloatBuffer</li>
+<li>DoubleBuffer</li>
+</ul>
+<h3 id="&#x76F4;&#x63A5;&#x7F13;&#x51B2;&#x533A;-amp-&#x975E;&#x76F4;&#x63A5;&#x7F13;&#x51B2;&#x533A;"><a href="#&#x76F4;&#x63A5;&#x7F13;&#x51B2;&#x533A;-amp-&#x975E;&#x76F4;&#x63A5;&#x7F13;&#x51B2;&#x533A;" class="headerlink" title="&#x76F4;&#x63A5;&#x7F13;&#x51B2;&#x533A;&amp;&#x975E;&#x76F4;&#x63A5;&#x7F13;&#x51B2;&#x533A;"></a>&#x76F4;&#x63A5;&#x7F13;&#x51B2;&#x533A;&amp;&#x975E;&#x76F4;&#x63A5;&#x7F13;&#x51B2;&#x533A;</h3><p>&#x53EF;&#x4EE5;&#x901A;&#x8FC7;isDirect()&#x5224;&#x65AD;&#x662F;&#x5426;&#x4E3A;&#x76F4;&#x63A5;&#x7F13;&#x51B2;&#x533A;&amp;&#x975E;&#x76F4;&#x63A5;&#x7F13;&#x51B2;&#x533A;</p>
+<ul>
+<li><p>&#x76F4;&#x63A5;&#x7F13;&#x51B2;&#x533A;(&#x7269;&#x7406;&#x5185;&#x5B58;&#x6620;&#x5C04;&#x6587;&#x4EF6;)</p>
+<p>&#x901A;&#x8FC7;allocateDirec()&#x65B9;&#x6CD5;&#x5206;&#x914D;&#x76F4;&#x63A5;&#x7F13;&#x51B2;&#x533A;&#xFF0C;&#x5C06;&#x7F13;&#x51B2;&#x533A;&#x5EFA;&#x7ACB;&#x5728;&#x7269;&#x7406;&#x5185;&#x5B58;&#x4E2D;&#x3002;<br>&#x53EF;&#x4EE5;&#x63D0;&#x9AD8;&#x6267;&#x884C;&#x6548;&#x7387;&#x3002;</p>
+<p>&#x7269;&#x7406;&#x78C1;&#x76D8;-&#x5185;&#x6838;&#x5730;&#x5740;&#x7A7A;&#x95F4;-&#x7269;&#x7406;&#x5185;&#x5B58;&#x6620;&#x5C04;&#x6587;&#x4EF6;-&#x7528;&#x6237;&#x5730;&#x5740;&#x7A7A;&#x95F4;-&#x5E94;&#x7528;&#x7A0B;&#x5E8F;</p>
+</li>
+<li><p>&#x975E;&#x76F4;&#x63A5;&#x7F13;&#x51B2;&#x533A;</p>
+<p>&#x901A;&#x8FC7;allocatie()&#x65B9;&#x6CD5;&#x5206;&#x914D;&#x7F13;&#x51B2;&#x533A;&#xFF0C;&#x5C06;&#x7F13;&#x51B2;&#x533A;&#x5EFA;&#x7ACB;&#x5728;JVM&#x7684;&#x5185;&#x5B58;&#x4E2D;&#x3002;</p>
+<p>&#x78C1;&#x76D8;-&#x5185;&#x6838;&#x5730;&#x5740;&#x7A7A;&#x95F4;-&#x7528;&#x6237;&#x5730;&#x5740;&#x7A7A;&#x95F4;-&#x5E94;&#x7528;&#x7A0B;&#x5E8F;</p>
+</li>
+</ul>
+<h2 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h2><p>&#x8D1F;&#x8D23;&#x7F13;&#x51B2;&#x533A;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x4F20;&#x8F93;&#x3002;Channel&#x672C;&#x8EAB;&#x4E0D;&#x5B58;&#x50A8;&#x6570;&#x636E;&#xFF0C;&#x56E0;&#x6B64;&#x9700;&#x8981;&#x914D;&#x5408;&#x7F13;&#x51B2;&#x533A;&#x8FDB;&#x884C;&#x4F20;&#x8F93;&#x3002;<br>&#x9488;&#x5BF9;&#x652F;&#x6301;&#x901A;&#x9053;&#x7684;&#x6CEA;&#x63D0;&#x4F9B;&#x4E86;getChannel()&#x65B9;&#x6CD5;&#xFF1A;<br>&#x672C;&#x5730;IO&#xFF1A;<br>FileInputStream/FileOutputStream<br>RandomAccessFile<br>&#x7F51;&#x8DEF;IO&#xFF1A;<br>Socket<br>SeverSocket<br>DatagramSocket</p>
+<p>&#x5728;JDK1.7&#x4E2D;&#x7684;NIO.2&#x9488;&#x5BF9;&#x5404;&#x4E2A;&#x901A;&#x9053;&#x63D0;&#x4F9B;&#x4E86;&#x9759;&#x6001;&#x65B9;&#x6CD5;open()<br>&#x548B;JDK1.7&#x4E2D;&#x7684;NIO.2&#x7684;Files&#x5DE5;&#x5177;&#x7C7B;&#x7684;newByteChannel()</p>
+<h3 id="&#x5B9E;&#x73B0;&#x7C7B;-1"><a href="#&#x5B9E;&#x73B0;&#x7C7B;-1" class="headerlink" title="&#x5B9E;&#x73B0;&#x7C7B;"></a>&#x5B9E;&#x73B0;&#x7C7B;</h3><ul>
+<li>FileChannel</li>
+<li>SocketChannel</li>
+<li>ServerSocketChannel</li>
+<li>DatagramChannel</li>
+</ul>
+<h3 id="&#x901A;&#x9053;&#x4E4B;&#x95F4;&#x7684;&#x6570;&#x636E;&#x4F20;&#x8F93;"><a href="#&#x901A;&#x9053;&#x4E4B;&#x95F4;&#x7684;&#x6570;&#x636E;&#x4F20;&#x8F93;" class="headerlink" title="&#x901A;&#x9053;&#x4E4B;&#x95F4;&#x7684;&#x6570;&#x636E;&#x4F20;&#x8F93;"></a>&#x901A;&#x9053;&#x4E4B;&#x95F4;&#x7684;&#x6570;&#x636E;&#x4F20;&#x8F93;</h3><ul>
+<li>transferFrom()</li>
+<li>transferTo()</li>
+</ul>
+<h3 id="&#x5206;&#x6563;&#x4E0E;&#x805A;&#x96C6;"><a href="#&#x5206;&#x6563;&#x4E0E;&#x805A;&#x96C6;" class="headerlink" title="&#x5206;&#x6563;&#x4E0E;&#x805A;&#x96C6;"></a>&#x5206;&#x6563;&#x4E0E;&#x805A;&#x96C6;</h3><ul>
+<li><p>&#x5206;&#x6563;(Scatter)</p>
+<p>&#x5206;&#x6563;&#x8BFB;&#x53D6;(Scattering Reads)&#xFF1A;&#x5C06;&#x901A;&#x9053;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x5206;&#x6563;&#x5230;&#x591A;&#x4E2A;&#x7F13;&#x51B2;&#x533A;&#x4E2D;</p>
+</li>
+<li><p>&#x805A;&#x96C6;(Gather)</p>
+<p>&#x805A;&#x96C6;&#x5199;&#x5165;(Gathering Writes)&#xFF1A;&#x5C06;&#x591A;&#x4E2A;&#x7F13;&#x51B2;&#x533A;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x805A;&#x96C6;&#x5230;&#x901A;&#x9053;&#x4E2D;</p>
+</li>
+</ul>
+<h3 id="&#x5B57;&#x7B26;&#x96C6;-Charest"><a href="#&#x5B57;&#x7B26;&#x96C6;-Charest" class="headerlink" title="&#x5B57;&#x7B26;&#x96C6;(Charest)"></a>&#x5B57;&#x7B26;&#x96C6;(Charest)</h3><ul>
+<li><p>&#x7F16;&#x7801;</p>
+<p>&#x5B57;&#x7B26;&#x4E32; -&gt; &#x5B57;&#x8282;&#x6570;&#x7EC4;</p>
+</li>
+<li><p>&#x89E3;&#x7801;</p>
+<p>&#x5B57;&#x8282;&#x6570;&#x7EC4; -&gt; &#x5B57;&#x7B26;&#x4E32;</p>
+</li>
+</ul>
+<h2 id="Selector"><a href="#Selector" class="headerlink" title="Selector"></a>Selector</h2></body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Java/">#Java</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/IO/">#IO</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2020/01/29/Spring-Boot/">Spring Boot</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2019/09/26/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%86%99Java%E8%99%9A%E6%8B%9F%E6%9C%BA-%E7%AC%94%E8%AE%B04/">自己动手写Java虚拟机 笔记4</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+<div class="sharebox">
+    
+<div class="addthis_inline_share_toolbox"></div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5d71c42eb9261743"></script>
+
+</div>
+
+
+
+<div class="comments">
+    <h3 class="title is-4">评论</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://example.com/2020/01/29/NIO/';
+        this.page.identifier = '2020/01/29/NIO/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'xzenge' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2020 Xiang Shi&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/nadia-repository">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+    <style>
+        .hljs {
+            position: relative;
+        }
+
+        .hljs .clipboard-btn {
+            float: right;
+            color: #9a9a9a;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hljs .clipboard-btn:hover {
+          color: #8a8a8a;
+        }
+
+        .hljs > .clipboard-btn {
+            display: none;
+            position: absolute;
+            right: 4px;
+            top: 4px;
+        }
+
+        .hljs:hover > .clipboard-btn {
+            display: inline;
+        }
+
+        .hljs > figcaption > .clipboard-btn {
+            margin-right: 4px;
+        }
+    </style>
+    <script>
+      $(document).ready(function () {
+        $('figure.hljs').each(function(i, figure) {
+          var codeId = 'code-' + i;
+          var code = figure.querySelector('.code');
+          var copyButton = $('<button>Copy <i class="far fa-clipboard"></i></button>');
+          code.id = codeId;
+          copyButton.addClass('clipboard-btn');
+          copyButton.attr('data-clipboard-target-id', codeId);
+
+          var figcaption = figure.querySelector('figcaption');
+
+          if (figcaption) {
+            figcaption.append(copyButton[0]);
+          } else {
+            figure.prepend(copyButton[0]);
+          }
+        })
+
+        var clipboard = new ClipboardJS('.clipboard-btn', {
+          target: function(trigger) {
+            return document.getElementById(trigger.getAttribute('data-clipboard-target-id'));
+          }
+        });
+        clipboard.on('success', function(e) {
+          e.clearSelection();
+        })
+      })
+    </script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="站内搜索" />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

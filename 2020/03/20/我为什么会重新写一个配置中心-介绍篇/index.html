@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>我为什么会手撸一个配置中心--介绍篇 - Hexo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="nadia-config&amp;#x662F;&amp;#x4E00;&amp;#x6B3E;&amp;#x57FA;&amp;#x4E8E;spring boot&amp;#x7684;&amp;#x914D;&amp;#x7F6E;&amp;#x4E2D;&amp;#x5FC3;&amp;#xFF0C;&amp;#x80FD;&amp;#x591F;&amp;#x96C6;&amp;#x4E2D;&amp;#x5316;&amp;#x7BA1;&amp;#x7406;&amp;#x4E0D;&amp;#x540C;&amp;#x73AF;&amp;#x5883;&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我为什么会手撸一个配置中心--介绍篇">
+<meta property="og:url" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="nadia-config&amp;#x662F;&amp;#x4E00;&amp;#x6B3E;&amp;#x57FA;&amp;#x4E8E;spring boot&amp;#x7684;&amp;#x914D;&amp;#x7F6E;&amp;#x4E2D;&amp;#x5FC3;&amp;#xFF0C;&amp;#x80FD;&amp;#x591F;&amp;#x96C6;&amp;#x4E2D;&amp;#x5316;&amp;#x7BA1;&amp;#x7406;&amp;#x4E0D;&amp;#x540C;&amp;#x73AF;&amp;#x5883;&amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/%E7%99%BB%E5%BD%95.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/%E6%B3%A8%E5%86%8C.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/%E4%B8%BB%E9%A1%B5%E9%9D%A2.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/metadata.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/compare.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/addGroup.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/switch.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/instance.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/configs.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/instanceConfig.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/history.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/allocate.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/allocateConfigs.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/operationLog.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/pendingTask.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/processingTask.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/completeTask.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/clientLog.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/role.png">
+<meta property="og:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/user.png">
+<meta property="article:published_time" content="2020-03-20T13:39:15.000Z">
+<meta property="article:modified_time" content="2020-12-14T10:33:44.564Z">
+<meta property="article:author" content="Xiang Shi">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="配置中心">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2%E5%9B%BE.png">
+
+
+
+
+
+<link rel="icon" href="/favicon.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147240985-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-147240985-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                <img src="/images/logo.png" alt="" height="28">
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories">Categories</a>
+            
+            <a class="navbar-item "
+               href="/tags">Tag</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="搜索" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/nadia-repository">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            我为什么会手撸一个配置中心--介绍篇
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2020-03-20T13:39:15.000Z" itemprop="datePublished">3月 20 2020</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Technology/">Technology</a>
+        </span>
+        
+        
+        <span class="column is-narrow">
+            
+            
+            10 分钟 读完 (约 1480 字)
+        </span>
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>nadia-config&#x662F;&#x4E00;&#x6B3E;&#x57FA;&#x4E8E;spring boot&#x7684;&#x914D;&#x7F6E;&#x4E2D;&#x5FC3;&#xFF0C;&#x80FD;&#x591F;&#x96C6;&#x4E2D;&#x5316;&#x7BA1;&#x7406;&#x4E0D;&#x540C;&#x73AF;&#x5883;&#x3001;&#x4E0D;&#x540C;&#x7248;&#x672C;&#x7684;&#x96C6;&#x7FA4;&#x914D;&#x7F6E;&#xFF0C;&#x5E76;&#x63D0;&#x4F9B;&#x914D;&#x7F6E;&#x7684;&#x5B9E;&#x65F6;&#x66F4;&#x65B0;&#x3001;&#x56DE;&#x8C03;&#x3001;&#x5BA1;&#x6279;&#x3001;&#x6743;&#x9650;&#x7BA1;&#x7406;&#x7B49;&#x529F;&#x80FD;&#x3002;</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/nadia-repository/nadia-config">https://github.com/nadia-repository/nadia-config</a></p>
+</blockquote>
+<h1 id="Nadia-Config-Center"><a href="#Nadia-Config-Center" class="headerlink" title="Nadia Config Center"></a>Nadia Config Center</h1><h2 id="&#x7EC4;&#x4EF6;&#x4ECB;&#x7ECD;"><a href="#&#x7EC4;&#x4EF6;&#x4ECB;&#x7ECD;" class="headerlink" title="&#x7EC4;&#x4EF6;&#x4ECB;&#x7ECD;"></a>&#x7EC4;&#x4EF6;&#x4ECB;&#x7ECD;</h2><ul>
+<li><a href="nadia-client/README.md">nadia-client</a></li>
+<li><a href="nadia-server/README.md">nadia-server</a></li>
+</ul>
+<h2 id="Release-Note"><a href="#Release-Note" class="headerlink" title="Release-Note"></a>Release-Note</h2><ul>
+<li><p>v1.0</p>
+<a id="more"></a>
+<h2 id="&#x4E3B;&#x8981;&#x76EE;&#x6807;&#xFF1A;"><a href="#&#x4E3B;&#x8981;&#x76EE;&#x6807;&#xFF1A;" class="headerlink" title="&#x4E3B;&#x8981;&#x76EE;&#x6807;&#xFF1A;"></a>&#x4E3B;&#x8981;&#x76EE;&#x6807;&#xFF1A;</h2></li>
+<li><p>&#x517C;&#x5BB9;springboot&#x6846;&#x67B6;&#xFF0C;&#x4E1A;&#x52A1;&#x7CFB;&#x7EDF;&#x65E0;&#x9700;&#x4EE3;&#x7801;&#x53D8;&#x66F4;</p>
+</li>
+<li><p>&#x5FEB;&#x901F;&#x63A5;&#x5165;&#xFF0C;jar&#x5305;&#x5F15;&#x7528;</p>
+</li>
+<li><p>&#x914D;&#x7F6E;&#x52A8;&#x6001;&#x66F4;&#x65B0;&#xFF0C;&#x5B9E;&#x65F6;&#x751F;&#x6548;</p>
+</li>
+<li><p>&#x652F;&#x6301;&#x96C6;&#x7FA4;&#x5206;&#x7EC4;&#xFF0C;&#x914D;&#x7F6E;&#x5DEE;&#x5F02;&#x5316;</p>
+</li>
+<li><p>&#x63D0;&#x4F9B;&#x914D;&#x7F6E;&#x7EDF;&#x4E00;&#x53D8;&#x66F4;&#x5E73;&#x53F0;&#xFF0C;&#x652F;&#x6301;&#x5E73;&#x53F0;&#x7528;&#x6237;&#x7684;&#x6743;&#x9650;&#x7BA1;&#x7406;&#x548C;&#x914D;&#x7F6E;&#x53D8;&#x66F4;&#x7684;&#x6743;&#x9650;&#x7BA1;&#x7406;</p>
+</li>
+</ul>
+<h4 id="&#x90E8;&#x7F72;&#x56FE;"><a href="#&#x90E8;&#x7F72;&#x56FE;" class="headerlink" title="&#x90E8;&#x7F72;&#x56FE;"></a>&#x90E8;&#x7F72;&#x56FE;</h4><p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2%E5%9B%BE.png" alt="01"></p>
+<h4 id="&#x9879;&#x76EE;&#x6784;&#x6210;"><a href="#&#x9879;&#x76EE;&#x6784;&#x6210;" class="headerlink" title="&#x9879;&#x76EE;&#x6784;&#x6210;"></a>&#x9879;&#x76EE;&#x6784;&#x6210;</h4><blockquote>
+<p>nadia-config &#x9879;&#x76EE;&#x6839;&#x76EE;&#x5F55;</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>nadia-client &#x5BA2;&#x6237;&#x7AEF;</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>nadia-core &#x901A;&#x7528;&#x4EE3;&#x7801;</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>nadia-server &#x670D;&#x52A1;&#x7AEF;</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>nadia-web &#x524D;&#x7AEF;&#x9875;&#x9762;</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>nadia-demo &#x5BA2;&#x6237;&#x7AEF;demo</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>docs &#x6587;&#x6863;</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>desgin &#x8BBE;&#x8BA1;&#x6587;&#x6863;</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>sql &#x670D;&#x52A1;&#x7AEF;&#x811A;&#x672C;</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>DDL.sql &#x5EFA;&#x8868;</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>DML.sql &#x521D;&#x59CB;&#x6570;&#x636E;</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4 id="&#x7BA1;&#x7406;&#x5E73;&#x53F0;&#x4ECB;&#x7ECD;"><a href="#&#x7BA1;&#x7406;&#x5E73;&#x53F0;&#x4ECB;&#x7ECD;" class="headerlink" title="&#x7BA1;&#x7406;&#x5E73;&#x53F0;&#x4ECB;&#x7ECD;"></a>&#x7BA1;&#x7406;&#x5E73;&#x53F0;&#x4ECB;&#x7ECD;</h4><h4 id="1-&#x767B;&#x5F55;&#x9875;&#x9762;"><a href="#1-&#x767B;&#x5F55;&#x9875;&#x9762;" class="headerlink" title="1. &#x767B;&#x5F55;&#x9875;&#x9762;"></a>1. &#x767B;&#x5F55;&#x9875;&#x9762;</h4><p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/%E7%99%BB%E5%BD%95.png" alt="02"></p>
+<h4 id="2-&#x6CE8;&#x518C;&#x9875;&#x9762;"><a href="#2-&#x6CE8;&#x518C;&#x9875;&#x9762;" class="headerlink" title="2. &#x6CE8;&#x518C;&#x9875;&#x9762;"></a>2. &#x6CE8;&#x518C;&#x9875;&#x9762;</h4><p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/%E6%B3%A8%E5%86%8C.png" alt="03"></p>
+<h4 id="3-&#x4E3B;&#x754C;&#x9762;"><a href="#3-&#x4E3B;&#x754C;&#x9762;" class="headerlink" title="3. &#x4E3B;&#x754C;&#x9762;"></a>3. &#x4E3B;&#x754C;&#x9762;</h4><h6 id="&#x6839;&#x636E;&#x767B;&#x5F55;&#x7528;&#x6237;&#x7684;&#x89D2;&#x8272;&#x4E0D;&#x540C;&#xFF0C;&#x83DC;&#x5355;&#x6309;&#x94AE;&#x4F1A;&#x6709;&#x76F8;&#x5E94;&#x53D8;&#x5316;"><a href="#&#x6839;&#x636E;&#x767B;&#x5F55;&#x7528;&#x6237;&#x7684;&#x89D2;&#x8272;&#x4E0D;&#x540C;&#xFF0C;&#x83DC;&#x5355;&#x6309;&#x94AE;&#x4F1A;&#x6709;&#x76F8;&#x5E94;&#x53D8;&#x5316;" class="headerlink" title="&#x6839;&#x636E;&#x767B;&#x5F55;&#x7528;&#x6237;&#x7684;&#x89D2;&#x8272;&#x4E0D;&#x540C;&#xFF0C;&#x83DC;&#x5355;&#x6309;&#x94AE;&#x4F1A;&#x6709;&#x76F8;&#x5E94;&#x53D8;&#x5316;"></a>&#x6839;&#x636E;&#x767B;&#x5F55;&#x7528;&#x6237;&#x7684;&#x89D2;&#x8272;&#x4E0D;&#x540C;&#xFF0C;&#x83DC;&#x5355;&#x6309;&#x94AE;&#x4F1A;&#x6709;&#x76F8;&#x5E94;&#x53D8;&#x5316;</h6><p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/%E4%B8%BB%E9%A1%B5%E9%9D%A2.png" alt="04"></p>
+<h4 id="4-&#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x2013;&#x5143;&#x6570;&#x636E;&#x7BA1;&#x7406;"><a href="#4-&#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x2013;&#x5143;&#x6570;&#x636E;&#x7BA1;&#x7406;" class="headerlink" title="4. &#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x2013;&#x5143;&#x6570;&#x636E;&#x7BA1;&#x7406;"></a>4. &#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x2013;&#x5143;&#x6570;&#x636E;&#x7BA1;&#x7406;</h4><h6 id="&#x5143;&#x6570;&#x636E;&#x7BA1;&#x7406;&#x662F;&#x6240;&#x6709;&#x914D;&#x7F6E;&#x7684;&#x57FA;&#x7840;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x4F7F;&#x7528;&#x914D;&#x7F6E;&#x9879;&#x65F6;&#x9700;&#x8981;&#x6307;&#x5B9A;&#x76F8;&#x5173;&#x7684;&#x5143;&#x6570;&#x636E;"><a href="#&#x5143;&#x6570;&#x636E;&#x7BA1;&#x7406;&#x662F;&#x6240;&#x6709;&#x914D;&#x7F6E;&#x7684;&#x57FA;&#x7840;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x4F7F;&#x7528;&#x914D;&#x7F6E;&#x9879;&#x65F6;&#x9700;&#x8981;&#x6307;&#x5B9A;&#x76F8;&#x5173;&#x7684;&#x5143;&#x6570;&#x636E;" class="headerlink" title="&#x5143;&#x6570;&#x636E;&#x7BA1;&#x7406;&#x662F;&#x6240;&#x6709;&#x914D;&#x7F6E;&#x7684;&#x57FA;&#x7840;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x4F7F;&#x7528;&#x914D;&#x7F6E;&#x9879;&#x65F6;&#x9700;&#x8981;&#x6307;&#x5B9A;&#x76F8;&#x5173;&#x7684;&#x5143;&#x6570;&#x636E;"></a>&#x5143;&#x6570;&#x636E;&#x7BA1;&#x7406;&#x662F;&#x6240;&#x6709;&#x914D;&#x7F6E;&#x7684;&#x57FA;&#x7840;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x4F7F;&#x7528;&#x914D;&#x7F6E;&#x9879;&#x65F6;&#x9700;&#x8981;&#x6307;&#x5B9A;&#x76F8;&#x5173;&#x7684;&#x5143;&#x6570;&#x636E;</h6><p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/metadata.png" alt="05"></p>
+<h6 id="&#x540D;&#x8BCD;&#x89E3;&#x91CA;"><a href="#&#x540D;&#x8BCD;&#x89E3;&#x91CA;" class="headerlink" title="&#x540D;&#x8BCD;&#x89E3;&#x91CA;"></a>&#x540D;&#x8BCD;&#x89E3;&#x91CA;</h6><ul>
+<li>Application &#x7CFB;&#x7EDF;&#x540D;&#x79F0;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x53EF;&#x4EE5;&#x6307;&#x5B9A;&#x4F7F;&#x7528;&#x4EFB;&#x610F;&#x4E00;&#x5957;&#x7CFB;&#x7EDF;&#x4E0B;&#x7684;&#x914D;&#x7F6E;&#x3002;</li>
+<li>Group &#x7EC4;&#x540D;&#x79F0;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x6307;&#x5B9A;&#x7CFB;&#x7EDF;&#x540E;&#xFF0C;&#x4ECD;&#x9700;&#x8981;&#x6307;&#x5B9A;&#x4F7F;&#x7528;&#x7CFB;&#x7EDF;&#x4E0B;&#x7684;&#x67D0;&#x4E2A;&#x7EC4;&#x3002;&#x82E5;&#x4E0D;&#x5F3A;&#x5236;&#x6307;&#x5B9A;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x542F;&#x52A8;&#x540E;&#x4F1A;&#x9ED8;&#x8BA4;&#x4F7F;&#x7528;Default&#x7EC4;&#x4E0B;&#x7684;&#x914D;&#x7F6E;&#xFF0C;&#x540E;&#x671F;&#x53EF;&#x4F7F;&#x7528;&#x7EC4;&#x5207;&#x6362;&#x529F;&#x80FD;&#x5207;&#x6362;&#x81F3;&#x4E0D;&#x540C;&#x7EC4;&#x3002;</li>
+</ul>
+<h6 id="&#x529F;&#x80FD;&#x8BF4;&#x660E;"><a href="#&#x529F;&#x80FD;&#x8BF4;&#x660E;" class="headerlink" title="&#x529F;&#x80FD;&#x8BF4;&#x660E;"></a>&#x529F;&#x80FD;&#x8BF4;&#x660E;</h6><ul>
+<li>Add &#x65B0;&#x589E;Application&#xFF0C;&#x540C;&#x65F6;&#x65B0;&#x589E;&#x9ED8;&#x8BA4;Group(Default)&#x3002;</li>
+<li>Delete &#x5220;&#x9664;Application\Group&#x4FE1;&#x606F;&#x3002;&#x5F53;&#x524D;Group&#x5982;&#x679C;&#x6B63;&#x5728;&#x88AB;&#x4F7F;&#x7528;&#xFF0C;&#x6216;&#x5F53;&#x524D;&#x7EC4;&#x4E3A;Default&#x7EC4;&#x4E14;&#x5B58;&#x5728;&#x975E;Default&#x7EC4;&#x65F6;&#xFF0C;&#x4E0D;&#x80FD;&#x5220;&#x9664;&#x3002;Defualt&#x7EC4;&#x5220;&#x9664;&#x540E;&#x5C06;&#x540C;&#x65F6;&#x5220;&#x9664;Application&#x3002;</li>
+<li>Compare &#x6BD4;&#x8F83;&#x540C;&#x4E00;Application&#x4E0B;&#x4E0D;&#x540C;Group&#x7684;&#x914D;&#x7F6E;&#x5DEE;&#x5F02;&#xFF0C;&#x53EF;&#x591A;&#x9009;&#xFF0C;&#x4F46;&#x81F3;&#x5C11;&#x9009;&#x4E24;&#x4E2A;&#x7EC4;&#x3002;</li>
+</ul>
+<p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/compare.png" alt="06"></p>
+<ul>
+<li>Edit &#x4FEE;&#x6539;Application&#x4FE1;&#x606F;</li>
+<li>Group &#x65B0;&#x589E;&#x7EC4;&#x3002;&#x53EF;&#x9009;&#x62E9;&#x4ECE;&#x67D0;&#x4E2A;&#x7EC4;&#x590D;&#x5236;&#x6240;&#x6709;&#x5DF2;&#x53D1;&#x5E03;&#x914D;&#x7F6E;&#x9879;&#xFF0C;&#x6216;&#x751F;&#x4EA7;&#x65B0;&#x7684;&#x7A7A;&#x7EC4;&#x3002;</li>
+</ul>
+<p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/addGroup.png" alt="07"></p>
+<ul>
+<li>Instances &#x53EF;&#x5C06;&#x67D0;&#x5B9E;&#x4F8B;&#x8C03;&#x6574;&#x81F3;&#x53E6;&#x4E00;&#x7EC4;&#x3002;</li>
+</ul>
+<p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/switch.png" alt="08"></p>
+<ul>
+<li>Inscance &#x67E5;&#x770B;&#x5F04;&#x5B9E;&#x4F8B;&#x5F53;&#x524D;&#x7684;&#x914D;&#x7F6E;&#x4E0E;&#x670D;&#x52A1;&#x7AEF;&#x914D;&#x7F6E;&#x7684;&#x5DEE;&#x5F02;&#x3002;</li>
+</ul>
+<p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/instance.png" alt="09"></p>
+<h4 id="5-&#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x2013;&#x914D;&#x7F6E;&#x9879;&#x7BA1;&#x7406;"><a href="#5-&#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x2013;&#x914D;&#x7F6E;&#x9879;&#x7BA1;&#x7406;" class="headerlink" title="5. &#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x2013;&#x914D;&#x7F6E;&#x9879;&#x7BA1;&#x7406;"></a>5. &#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x2013;&#x914D;&#x7F6E;&#x9879;&#x7BA1;&#x7406;</h4><h6 id="&#x914D;&#x7F6E;&#x9879;&#x7BA1;&#x7406;&#x63D0;&#x4F9B;&#x5177;&#x4F53;&#x914D;&#x7F6E;&#x7684;&#x589E;&#x5220;&#x6539;&#x67E5;&#x3001;&#x53D1;&#x5E03;&#x7B49;&#x529F;&#x80FD;"><a href="#&#x914D;&#x7F6E;&#x9879;&#x7BA1;&#x7406;&#x63D0;&#x4F9B;&#x5177;&#x4F53;&#x914D;&#x7F6E;&#x7684;&#x589E;&#x5220;&#x6539;&#x67E5;&#x3001;&#x53D1;&#x5E03;&#x7B49;&#x529F;&#x80FD;" class="headerlink" title="&#x914D;&#x7F6E;&#x9879;&#x7BA1;&#x7406;&#x63D0;&#x4F9B;&#x5177;&#x4F53;&#x914D;&#x7F6E;&#x7684;&#x589E;&#x5220;&#x6539;&#x67E5;&#x3001;&#x53D1;&#x5E03;&#x7B49;&#x529F;&#x80FD;"></a>&#x914D;&#x7F6E;&#x9879;&#x7BA1;&#x7406;&#x63D0;&#x4F9B;&#x5177;&#x4F53;&#x914D;&#x7F6E;&#x7684;&#x589E;&#x5220;&#x6539;&#x67E5;&#x3001;&#x53D1;&#x5E03;&#x7B49;&#x529F;&#x80FD;</h6><p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/configs.png" alt="10"></p>
+<h6 id="&#x540D;&#x8BCD;&#x89E3;&#x91CA;-1"><a href="#&#x540D;&#x8BCD;&#x89E3;&#x91CA;-1" class="headerlink" title="&#x540D;&#x8BCD;&#x89E3;&#x91CA;"></a>&#x540D;&#x8BCD;&#x89E3;&#x91CA;</h6><ul>
+<li>Key &#x914D;&#x7F6E;&#x9879;&#x7684;key&#xFF0C;&#x4E0E;&#x5BA2;&#x6237;&#x7AEF;&#x4E2D;@Value({key})&#x76F8;&#x5BF9;&#x5E94;</li>
+<li>Value &#x503C;</li>
+<li>Status <ul>
+<li>new &#x65B0;&#x5EFA;&#x914D;&#x7F6E;</li>
+<li>edited &#x914D;&#x7F6E;&#x5DF2;&#x53D8;&#x66F4;&#xFF0C;&#x5E26;&#x5BA1;&#x6279;</li>
+<li>approved &#x914D;&#x7F6E;&#x5BA1;&#x6279;&#x901A;&#x8FC7;&#xFF0C;&#x53EF;&#x53D1;&#x5E03;</li>
+<li>published &#x914D;&#x7F6E;&#x5DF2;&#x53D1;&#x5E03;</li>
+<li>removing &#x914D;&#x7F6E;&#x5220;&#x9664;&#xFF0C;&#x5F85;&#x5BA1;&#x6279;</li>
+<li>deleted &#x914D;&#x7F6E;&#x5DF2;&#x5220;&#x9664;&#xFF0C;&#x4E0D;&#x663E;&#x793A;</li>
+<li>invalid &#x914D;&#x7F6E;&#x65E0;&#x6548;&#xFF0C;&#x4E0D;&#x663E;&#x793A;</li>
+</ul>
+</li>
+</ul>
+<h6 id="&#x529F;&#x80FD;&#x8BF4;&#x660E;-1"><a href="#&#x529F;&#x80FD;&#x8BF4;&#x660E;-1" class="headerlink" title="&#x529F;&#x80FD;&#x8BF4;&#x660E;"></a>&#x529F;&#x80FD;&#x8BF4;&#x660E;</h6><ul>
+<li>Add &#x65B0;&#x589E;&#x914D;&#x7F6E;&#xFF0C;&#x53EF;&#x9009;&#x62E9;&#x914D;&#x7F6E;&#x7684;&#x53EF;&#x89C1;&#x6743;&#x9650;&#x3002;&#x82E5;&#x4E0D;&#x9009;&#x62E9;&#xFF0C;&#x5219;&#x8BE5;&#x914D;&#x7F6E;&#x4E3A;&#x5F53;&#x524D;&#x767B;&#x5F55;&#x7528;&#x6237;&#x7684;&#x89D2;&#x8272;&#x53EF;&#x89C1;&#x3002;&#x9700;&#x8981;&#x5BA1;&#x6279;&#x3002;</li>
+<li>Delete &#x5220;&#x9664;&#x914D;&#x7F6E;&#xFF0C;&#x9700;&#x8981;&#x5BA1;&#x6279;&#x3002;</li>
+<li>Export &#x5BFC;&#x51FA;&#x914D;&#x7F6E;&#x3002;</li>
+<li>Import &#x5BFC;&#x5165;&#x914D;&#x7F6E;&#xFF0C;&#x9700;&#x8981;&#x5BA1;&#x6279;&#x3002;</li>
+<li>Edit &#x7F16;&#x8F91;&#x914D;&#x7F6E;&#xFF0C;&#x9700;&#x8981;&#x5BA1;&#x6279;&#x3002;</li>
+<li>Instance &#x67E5;&#x770B;&#x5F53;&#x524D;&#x914D;&#x7F6E;&#x7684;&#x4F7F;&#x7528;&#x60C5;&#x51B5;&#x3002;</li>
+</ul>
+<p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/instanceConfig.png" alt="11"></p>
+<ul>
+<li>History &#x914D;&#x7F6E;&#x4FEE;&#x6539;&#x5386;&#x53F2;</li>
+</ul>
+<p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/history.png" alt="12"></p>
+<h4 id="6-&#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x2013;&#x914D;&#x7F6E;&#x9879;&#x5206;&#x914D;"><a href="#6-&#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x2013;&#x914D;&#x7F6E;&#x9879;&#x5206;&#x914D;" class="headerlink" title="6. &#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x2013;&#x914D;&#x7F6E;&#x9879;&#x5206;&#x914D;"></a>6. &#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x2013;&#x914D;&#x7F6E;&#x9879;&#x5206;&#x914D;</h4><h6 id="&#x914D;&#x7F6E;&#x9879;&#x5206;&#x914D;&#x63D0;&#x4F9B;&#x5168;&#x5C40;&#x7684;&#x89D2;&#x8272;&#x914D;&#x7F6E;&#x53EF;&#x89C1;&#x6743;&#x9650;&#x8BBE;&#x7F6E;&#x3002;"><a href="#&#x914D;&#x7F6E;&#x9879;&#x5206;&#x914D;&#x63D0;&#x4F9B;&#x5168;&#x5C40;&#x7684;&#x89D2;&#x8272;&#x914D;&#x7F6E;&#x53EF;&#x89C1;&#x6743;&#x9650;&#x8BBE;&#x7F6E;&#x3002;" class="headerlink" title="&#x914D;&#x7F6E;&#x9879;&#x5206;&#x914D;&#x63D0;&#x4F9B;&#x5168;&#x5C40;&#x7684;&#x89D2;&#x8272;&#x914D;&#x7F6E;&#x53EF;&#x89C1;&#x6743;&#x9650;&#x8BBE;&#x7F6E;&#x3002;"></a>&#x914D;&#x7F6E;&#x9879;&#x5206;&#x914D;&#x63D0;&#x4F9B;&#x5168;&#x5C40;&#x7684;&#x89D2;&#x8272;&#x914D;&#x7F6E;&#x53EF;&#x89C1;&#x6743;&#x9650;&#x8BBE;&#x7F6E;&#x3002;</h6><p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/allocate.png" alt="13"></p>
+<h6 id="&#x529F;&#x80FD;&#x8BF4;&#x660E;-2"><a href="#&#x529F;&#x80FD;&#x8BF4;&#x660E;-2" class="headerlink" title="&#x529F;&#x80FD;&#x8BF4;&#x660E;"></a>&#x529F;&#x80FD;&#x8BF4;&#x660E;</h6><ul>
+<li>Allocate &#x5206;&#x914D;&#x89D2;&#x8272;&#x53EF;&#x89C1;&#x914D;&#x7F6E;</li>
+</ul>
+<p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/allocateConfigs.png" alt="14"></p>
+<h4 id="7-&#x6D88;&#x606F;&#x4E2D;&#x5FC3;&#x2013;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;"><a href="#7-&#x6D88;&#x606F;&#x4E2D;&#x5FC3;&#x2013;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;" class="headerlink" title="7. &#x6D88;&#x606F;&#x4E2D;&#x5FC3;&#x2013;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;"></a>7. &#x6D88;&#x606F;&#x4E2D;&#x5FC3;&#x2013;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;</h4><h6 id="&#x63D0;&#x4F9B;&#x7BA1;&#x7406;&#x5E73;&#x53F0;&#x6240;&#x6709;&#x589E;&#x5220;&#x6539;&#x7684;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;&#x67E5;&#x8BE2;&#x548C;&#x56DE;&#x6EAF;&#x3002;"><a href="#&#x63D0;&#x4F9B;&#x7BA1;&#x7406;&#x5E73;&#x53F0;&#x6240;&#x6709;&#x589E;&#x5220;&#x6539;&#x7684;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;&#x67E5;&#x8BE2;&#x548C;&#x56DE;&#x6EAF;&#x3002;" class="headerlink" title="&#x63D0;&#x4F9B;&#x7BA1;&#x7406;&#x5E73;&#x53F0;&#x6240;&#x6709;&#x589E;&#x5220;&#x6539;&#x7684;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;&#x67E5;&#x8BE2;&#x548C;&#x56DE;&#x6EAF;&#x3002;"></a>&#x63D0;&#x4F9B;&#x7BA1;&#x7406;&#x5E73;&#x53F0;&#x6240;&#x6709;&#x589E;&#x5220;&#x6539;&#x7684;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;&#x67E5;&#x8BE2;&#x548C;&#x56DE;&#x6EAF;&#x3002;</h6><p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/operationLog.png" alt="15"></p>
+<h4 id="8-&#x6D88;&#x606F;&#x4E2D;&#x5FC3;&#x2013;&#x4EFB;&#x52A1;&#x4E2D;&#x5FC3;"><a href="#8-&#x6D88;&#x606F;&#x4E2D;&#x5FC3;&#x2013;&#x4EFB;&#x52A1;&#x4E2D;&#x5FC3;" class="headerlink" title="8. &#x6D88;&#x606F;&#x4E2D;&#x5FC3;&#x2013;&#x4EFB;&#x52A1;&#x4E2D;&#x5FC3;"></a>8. &#x6D88;&#x606F;&#x4E2D;&#x5FC3;&#x2013;&#x4EFB;&#x52A1;&#x4E2D;&#x5FC3;</h4><h6 id="&#x63D0;&#x4F9B;&#x5BA1;&#x6279;&#x67E5;&#x770B;&#x3001;&#x5BA1;&#x6279;&#x64CD;&#x4F5C;-&#x901A;&#x8FC7;&#x3001;&#x62D2;&#x7EDD;-&#x7B49;&#x529F;&#x80FD;&#x3002;"><a href="#&#x63D0;&#x4F9B;&#x5BA1;&#x6279;&#x67E5;&#x770B;&#x3001;&#x5BA1;&#x6279;&#x64CD;&#x4F5C;-&#x901A;&#x8FC7;&#x3001;&#x62D2;&#x7EDD;-&#x7B49;&#x529F;&#x80FD;&#x3002;" class="headerlink" title="&#x63D0;&#x4F9B;&#x5BA1;&#x6279;&#x67E5;&#x770B;&#x3001;&#x5BA1;&#x6279;&#x64CD;&#x4F5C;(&#x901A;&#x8FC7;&#x3001;&#x62D2;&#x7EDD;)&#x7B49;&#x529F;&#x80FD;&#x3002;"></a>&#x63D0;&#x4F9B;&#x5BA1;&#x6279;&#x67E5;&#x770B;&#x3001;&#x5BA1;&#x6279;&#x64CD;&#x4F5C;(&#x901A;&#x8FC7;&#x3001;&#x62D2;&#x7EDD;)&#x7B49;&#x529F;&#x80FD;&#x3002;</h6><ul>
+<li>Pending Task &#x5F85;&#x5BA1;&#x6279;&#x5217;&#x8868;&#xFF0C;&#x63D0;&#x4F9B;&#x5BA1;&#x6279;&#x901A;&#x8FC7;&#x3001;&#x51B3;&#x7EDD;&#xFF0C;&#x5BA1;&#x914D;&#x5185;&#x5BB9;&#x67E5;&#x770B;&#x7B49;&#x529F;&#x80FD;&#x3002;</li>
+</ul>
+<p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/pendingTask.png" alt="16"></p>
+<ul>
+<li>Processing Task &#x5BA1;&#x6279;&#x8FDB;&#x5EA6;&#x5217;&#x8868;&#xFF0C;&#x63D0;&#x4F9B;&#x5BA1;&#x6279;&#x8FDB;&#x5EA6;&#x7684;&#x67E5;&#x8BE2;&#x3002;</li>
+</ul>
+<p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/processingTask.png" alt="17"></p>
+<ul>
+<li>Complete Task &#x5B8C;&#x6210;&#x4EFB;&#x52A1;&#x5217;&#x8868;&#xFF0C;&#x63D0;&#x4F9B;&#x5386;&#x53F2;&#x5BA1;&#x6279;&#x901A;&#x8FC7;&#x3001;&#x62D2;&#x7EDD;&#x7684;&#x4EFB;&#x52A1;&#x7684;&#x67E5;&#x8BE2;&#x3002;</li>
+</ul>
+<p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/completeTask.png" alt="18"></p>
+<h4 id="9-&#x6D88;&#x606F;&#x4E2D;&#x5FC3;&#x2013;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;"><a href="#9-&#x6D88;&#x606F;&#x4E2D;&#x5FC3;&#x2013;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;" class="headerlink" title="9. &#x6D88;&#x606F;&#x4E2D;&#x5FC3;&#x2013;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;"></a>9. &#x6D88;&#x606F;&#x4E2D;&#x5FC3;&#x2013;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;</h4><h6 id="&#x63D0;&#x4F9B;&#x5BA2;&#x6237;&#x7AEF;&#x4E0A;&#x62A5;&#x65E5;&#x5FD7;&#x7684;&#x67E5;&#x8BE2;&#x3002;"><a href="#&#x63D0;&#x4F9B;&#x5BA2;&#x6237;&#x7AEF;&#x4E0A;&#x62A5;&#x65E5;&#x5FD7;&#x7684;&#x67E5;&#x8BE2;&#x3002;" class="headerlink" title="&#x63D0;&#x4F9B;&#x5BA2;&#x6237;&#x7AEF;&#x4E0A;&#x62A5;&#x65E5;&#x5FD7;&#x7684;&#x67E5;&#x8BE2;&#x3002;"></a>&#x63D0;&#x4F9B;&#x5BA2;&#x6237;&#x7AEF;&#x4E0A;&#x62A5;&#x65E5;&#x5FD7;&#x7684;&#x67E5;&#x8BE2;&#x3002;</h6><p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/clientLog.png" alt="19"></p>
+<h4 id="10-&#x7528;&#x6237;&#x4E2D;&#x5FC3;&#x2013;&#x89D2;&#x8272;&#x7BA1;&#x7406;"><a href="#10-&#x7528;&#x6237;&#x4E2D;&#x5FC3;&#x2013;&#x89D2;&#x8272;&#x7BA1;&#x7406;" class="headerlink" title="10. &#x7528;&#x6237;&#x4E2D;&#x5FC3;&#x2013;&#x89D2;&#x8272;&#x7BA1;&#x7406;"></a>10. &#x7528;&#x6237;&#x4E2D;&#x5FC3;&#x2013;&#x89D2;&#x8272;&#x7BA1;&#x7406;</h4><h6 id="&#x63D0;&#x4F9B;&#x89D2;&#x8272;&#x7684;&#x589E;&#x5220;&#x6539;&#x67E5;&#xFF0C;&#x89D2;&#x8272;&#x7684;&#x83DC;&#x5355;&#x6743;&#x9650;&#x3001;&#x6309;&#x94AE;&#x6743;&#x9650;&#x7684;&#x8BBE;&#x7F6E;&#x3002;"><a href="#&#x63D0;&#x4F9B;&#x89D2;&#x8272;&#x7684;&#x589E;&#x5220;&#x6539;&#x67E5;&#xFF0C;&#x89D2;&#x8272;&#x7684;&#x83DC;&#x5355;&#x6743;&#x9650;&#x3001;&#x6309;&#x94AE;&#x6743;&#x9650;&#x7684;&#x8BBE;&#x7F6E;&#x3002;" class="headerlink" title="&#x63D0;&#x4F9B;&#x89D2;&#x8272;&#x7684;&#x589E;&#x5220;&#x6539;&#x67E5;&#xFF0C;&#x89D2;&#x8272;&#x7684;&#x83DC;&#x5355;&#x6743;&#x9650;&#x3001;&#x6309;&#x94AE;&#x6743;&#x9650;&#x7684;&#x8BBE;&#x7F6E;&#x3002;"></a>&#x63D0;&#x4F9B;&#x89D2;&#x8272;&#x7684;&#x589E;&#x5220;&#x6539;&#x67E5;&#xFF0C;&#x89D2;&#x8272;&#x7684;&#x83DC;&#x5355;&#x6743;&#x9650;&#x3001;&#x6309;&#x94AE;&#x6743;&#x9650;&#x7684;&#x8BBE;&#x7F6E;&#x3002;</h6><p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/role.png" alt="20"></p>
+<h4 id="11-&#x7528;&#x6237;&#x4E2D;&#x5FC3;&#x2013;&#x7528;&#x6237;&#x7BA1;&#x7406;"><a href="#11-&#x7528;&#x6237;&#x4E2D;&#x5FC3;&#x2013;&#x7528;&#x6237;&#x7BA1;&#x7406;" class="headerlink" title="11. &#x7528;&#x6237;&#x4E2D;&#x5FC3;&#x2013;&#x7528;&#x6237;&#x7BA1;&#x7406;"></a>11. &#x7528;&#x6237;&#x4E2D;&#x5FC3;&#x2013;&#x7528;&#x6237;&#x7BA1;&#x7406;</h4><h6 id="&#x63D0;&#x4F9B;&#x7528;&#x6237;&#x7684;&#x589E;&#x5220;&#x6539;&#x67E5;&#xFF0C;&#x7528;&#x6237;&#x7684;&#x89D2;&#x8272;&#x5206;&#x914D;&#x8BBE;&#x7F6E;&#x3002;"><a href="#&#x63D0;&#x4F9B;&#x7528;&#x6237;&#x7684;&#x589E;&#x5220;&#x6539;&#x67E5;&#xFF0C;&#x7528;&#x6237;&#x7684;&#x89D2;&#x8272;&#x5206;&#x914D;&#x8BBE;&#x7F6E;&#x3002;" class="headerlink" title="&#x63D0;&#x4F9B;&#x7528;&#x6237;&#x7684;&#x589E;&#x5220;&#x6539;&#x67E5;&#xFF0C;&#x7528;&#x6237;&#x7684;&#x89D2;&#x8272;&#x5206;&#x914D;&#x8BBE;&#x7F6E;&#x3002;"></a>&#x63D0;&#x4F9B;&#x7528;&#x6237;&#x7684;&#x589E;&#x5220;&#x6539;&#x67E5;&#xFF0C;&#x7528;&#x6237;&#x7684;&#x89D2;&#x8272;&#x5206;&#x914D;&#x8BBE;&#x7F6E;&#x3002;</h6><p><img src="/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/user.png" alt="21"></p>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Java/">#Java</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Redis/">#Redis</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/">#配置中心</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2020/03/24/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E8%AE%BE%E8%AE%A1%E7%AF%87/">我为什么会手撸一个配置中心-设计篇（一）</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2020/03/19/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E8%B5%B7%E6%BA%90%E7%AF%87/">我为什么会手撸一个配置中心--起源篇</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+<div class="sharebox">
+    
+<div class="addthis_inline_share_toolbox"></div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5d71c42eb9261743"></script>
+
+</div>
+
+
+
+<div class="comments">
+    <h3 class="title is-4">评论</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://example.com/2020/03/20/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%8B%E7%BB%8D%E7%AF%87/';
+        this.page.identifier = '2020/03/20/我为什么会重新写一个配置中心-介绍篇/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'xzenge' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2020 Xiang Shi&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/nadia-repository">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+    <style>
+        .hljs {
+            position: relative;
+        }
+
+        .hljs .clipboard-btn {
+            float: right;
+            color: #9a9a9a;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hljs .clipboard-btn:hover {
+          color: #8a8a8a;
+        }
+
+        .hljs > .clipboard-btn {
+            display: none;
+            position: absolute;
+            right: 4px;
+            top: 4px;
+        }
+
+        .hljs:hover > .clipboard-btn {
+            display: inline;
+        }
+
+        .hljs > figcaption > .clipboard-btn {
+            margin-right: 4px;
+        }
+    </style>
+    <script>
+      $(document).ready(function () {
+        $('figure.hljs').each(function(i, figure) {
+          var codeId = 'code-' + i;
+          var code = figure.querySelector('.code');
+          var copyButton = $('<button>Copy <i class="far fa-clipboard"></i></button>');
+          code.id = codeId;
+          copyButton.addClass('clipboard-btn');
+          copyButton.attr('data-clipboard-target-id', codeId);
+
+          var figcaption = figure.querySelector('figcaption');
+
+          if (figcaption) {
+            figcaption.append(copyButton[0]);
+          } else {
+            figure.prepend(copyButton[0]);
+          }
+        })
+
+        var clipboard = new ClipboardJS('.clipboard-btn', {
+          target: function(trigger) {
+            return document.getElementById(trigger.getAttribute('data-clipboard-target-id'));
+          }
+        });
+        clipboard.on('success', function(e) {
+          e.clearSelection();
+        })
+      })
+    </script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="站内搜索" />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

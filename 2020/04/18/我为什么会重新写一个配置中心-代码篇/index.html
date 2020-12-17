@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>我为什么会手撸一个配置中心-代码篇 - Hexo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="&amp;#x4E0A;&amp;#x671F;&amp;#x6211;&amp;#x4EEC;&amp;#x786E;&amp;#x5B9A;&amp;#x4E86;&amp;#x4EE5;Spring&amp;#x7684;&amp;#x65B9;&amp;#x5411;&amp;#x548C;&amp;#x91C7;&amp;#x7528;Redis&amp;#x6765;&amp;#x505A;&amp;#x914D;&amp;#x7F6E;&amp;#x5173;&amp;#x7CFB;&amp;#xFF0C;&amp;#x6211;&amp;#x4EEC;&amp;#x5C">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我为什么会手撸一个配置中心-代码篇">
+<meta property="og:url" content="http://example.com/2020/04/18/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%A3%E7%A0%81%E7%AF%87/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="&amp;#x4E0A;&amp;#x671F;&amp;#x6211;&amp;#x4EEC;&amp;#x786E;&amp;#x5B9A;&amp;#x4E86;&amp;#x4EE5;Spring&amp;#x7684;&amp;#x65B9;&amp;#x5411;&amp;#x548C;&amp;#x91C7;&amp;#x7528;Redis&amp;#x6765;&amp;#x505A;&amp;#x914D;&amp;#x7F6E;&amp;#x5173;&amp;#x7CFB;&amp;#xFF0C;&amp;#x6211;&amp;#x4EEC;&amp;#x5C">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-18T07:12:58.000Z">
+<meta property="article:modified_time" content="2020-12-14T09:51:24.047Z">
+<meta property="article:author" content="Xiang Shi">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="配置中心">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+<link rel="icon" href="/favicon.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147240985-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-147240985-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                <img src="/images/logo.png" alt="" height="28">
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories">Categories</a>
+            
+            <a class="navbar-item "
+               href="/tags">Tag</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="搜索" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/nadia-repository">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            我为什么会手撸一个配置中心-代码篇
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2020-04-18T07:12:58.000Z" itemprop="datePublished">4月 18 2020</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Technology/">Technology</a>
+        </span>
+        
+        
+        <span class="column is-narrow">
+            
+            
+            12 分钟 读完 (约 1798 字)
+        </span>
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>&#x4E0A;&#x671F;&#x6211;&#x4EEC;&#x786E;&#x5B9A;&#x4E86;&#x4EE5;Spring&#x7684;&#x65B9;&#x5411;&#x548C;&#x91C7;&#x7528;Redis&#x6765;&#x505A;&#x914D;&#x7F6E;&#x5173;&#x7CFB;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x5F00;&#x59CB;&#x56F4;&#x7ED5;&#x8FD9;&#x4E24;&#x4E2A;&#x5927;&#x5934;&#x5177;&#x4F53;&#x7684;&#x5F00;&#x59CB;&#x8BBE;&#x8BA1;&#x5BA2;&#x6237;&#x7AEF;&#x529F;&#x80FD;&#x3002;</p>
+<h2 id="1-&#x8BA9;Spring&#x542F;&#x52A8;&#x6211;&#x4EEC;&#x7684;&#x914D;&#x7F6E;&#x4E2D;&#x5FC3;&#x5BA2;&#x6237;&#x7AEF;"><a href="#1-&#x8BA9;Spring&#x542F;&#x52A8;&#x6211;&#x4EEC;&#x7684;&#x914D;&#x7F6E;&#x4E2D;&#x5FC3;&#x5BA2;&#x6237;&#x7AEF;" class="headerlink" title="1.&#x8BA9;Spring&#x542F;&#x52A8;&#x6211;&#x4EEC;&#x7684;&#x914D;&#x7F6E;&#x4E2D;&#x5FC3;&#x5BA2;&#x6237;&#x7AEF;"></a>1.&#x8BA9;Spring&#x542F;&#x52A8;&#x6211;&#x4EEC;&#x7684;&#x914D;&#x7F6E;&#x4E2D;&#x5FC3;&#x5BA2;&#x6237;&#x7AEF;</h2><p>&#x6211;&#x4EEC;&#x5B9A;&#x4E49;&#x4E86;&#x914D;&#x7F6E;&#x4E2D;&#x5FC3;&#x7684;&#x542F;&#x52A8;&#x6CE8;&#x89E3;&#x3002;&#x540C;&#x5927;&#x591A;&#x6570;Spring&#x7684;&#x6574;&#x5408;&#x9879;&#x76EE;&#x4E00;&#x6837;&#xFF0C;&#x4E0D;&#x4EC5;&#x80FD;&#x901A;&#x8FC7;&#x542F;&#x52A8;&#x6CE8;&#x89E3;&#x542F;&#x7528;&#x529F;&#x80FD;&#xFF0C;&#x540C;&#x65F6;&#x8FD8;&#x80FD;&#x5BF9;&#x914D;&#x7F6E;&#x7684;&#x5E94;&#x7528;&#x8FDB;&#x884C;&#x521D;&#x59CB;&#x8BBE;&#x5B9A;&#x3002;</p>
+<a id="more"></a>
+<figure class="highlight java hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="hljs-meta">@Target(ElementType.TYPE)</span></span><br><span class="line"><span class="hljs-meta">@Documented</span></span><br><span class="line"><span class="hljs-meta">@Import(ConfigRegistrar.class)</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> EnableNadiaConfig {</span><br><span class="line">    <span class="hljs-comment">//&#x542F;&#x7528;&#x73AF;&#x5883;</span></span><br><span class="line">    <span class="hljs-comment">//&#x672A;&#x8BBE;&#x7F6E;&#x65F6;&#x6240;&#x6709;&#x73AF;&#x5883;&#x542F;&#x52A8;</span></span><br><span class="line">    String[] actives() <span class="hljs-keyword">default</span> {};</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">//&#x6307;&#x5B9A;&#x914D;&#x7F6E;&#x6240;&#x5C5E;&#x7684;Application</span></span><br><span class="line">    <span class="hljs-function">String <span class="hljs-title">application</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> &quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">//&#x9ED8;&#x8BA4;&#x5206;&#x7EC4;</span></span><br><span class="line">    <span class="hljs-comment">//&#x672A;&#x8BBE;&#x7F6E;&#x65F6;&#x4E3A;&#x9ED8;&#x8BA4;&#x5206;&#x7EC4;</span></span><br><span class="line">    <span class="hljs-function">String <span class="hljs-title">group</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> &quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">//&#x6307;&#x5B9A;&#x914D;&#x7F6E;&#x7684;&#x5305;&#x8DEF;&#x5F84;&#xFF0C;&#x907F;&#x514D;&#x89E3;&#x6790;&#x65E0;&#x7528;&#x7684;&#x914D;&#x7F6E;</span></span><br><span class="line">    String[] basePackages() <span class="hljs-keyword">default</span> {};</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="2-&#x6CE8;&#x518C;&#x914D;&#x7F6E;&#x4E2D;&#x5FC3;&#x76F8;&#x5173;&#x7C7B;"><a href="#2-&#x6CE8;&#x518C;&#x914D;&#x7F6E;&#x4E2D;&#x5FC3;&#x76F8;&#x5173;&#x7C7B;" class="headerlink" title="2.&#x6CE8;&#x518C;&#x914D;&#x7F6E;&#x4E2D;&#x5FC3;&#x76F8;&#x5173;&#x7C7B;"></a>2.&#x6CE8;&#x518C;&#x914D;&#x7F6E;&#x4E2D;&#x5FC3;&#x76F8;&#x5173;&#x7C7B;</h2><p>&#x901A;&#x8FC7;&#x5B9E;&#x73B0;ImportBeanDefinitionRegistrar&#x65B9;&#x6CD5;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x83B7;&#x5F97;Bean&#x5B9A;&#x4E49;&#x7684;&#x6CE8;&#x518C;&#x5668;&#xFF0C;&#x6B64;&#x65F6;&#x5C31;&#x53EF;&#x4EE5;&#x5C06;&#x6211;&#x4EEC;&#x7684;&#x529F;&#x80FD;&#x4F18;&#x96C5;&#x7684;&#x6CE8;&#x518C;&#x81F3;spring&#x751F;&#x547D;&#x5468;&#x671F;&#x5185;&#x3002;</p>
+<p>&#x503C;&#x5F97;&#x6CE8;&#x610F;&#x7684;&#x662F;&#xFF0C;&#x6211;&#x4EEC;&#x8BBE;&#x8BA1;&#x65F6;&#x91C7;&#x7528;&#x4E86;spi&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x5728;&#x5B9E;&#x73B0;&#x7684;&#x65F6;&#x5019;&#x91C7;&#x7528;&#x7684;&#x662F;Redis&#x3002;&#x8FD9;&#x5C31;&#x610F;&#x5473;&#x7740;&#x672A;&#x6765;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x60F3;&#x66F4;&#x6362;&#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x5B8C;&#x5168;&#x53EF;&#x4EE5;&#x7EE7;&#x627F;&#x73B0;&#x6709;&#x63A5;&#x53E3;&#x5B9E;&#x73B0;&#x4E00;&#x5957;&#x65B0;&#x7684;&#x673A;&#x5236;&#x3002;&#x4E3A;&#x672A;&#x6765;&#x7684;&#x62D3;&#x5C55;&#x63D0;&#x4F9B;&#x4E86;&#x53EF;&#x80FD;&#x6027;&#x3002;</p>
+<figure class="highlight java hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConfigRegistrar</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">ImportBeanDefinitionRegistrar</span>, <span class="hljs-title">EnvironmentAware</span> </span>{</span><br><span class="line"></span><br><span class="line">    .....</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">registerBeanDefinitions</span><span class="hljs-params">(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry)</span> </span>{</span><br><span class="line">        AnnotationAttributes attributes = AnnotationAttributes</span><br><span class="line">                .fromMap(importingClassMetadata.getAnnotationAttributes(EnableNadiaConfig.class.getName()));</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//&#x68C0;&#x67E5;&#x662F;&#x5426;&#x9700;&#x8981;&#x542F;&#x52A8;</span></span><br><span class="line">        <span class="hljs-keyword">if</span> (!enableConfig(importingClassMetadata, attributes)) {</span><br><span class="line">            <span class="hljs-keyword">return</span>;</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//&#x521D;&#x59CB;&#x5316;&#x9700;&#x8981;&#x626B;&#x63CF;&#x7684;&#x5305;</span></span><br><span class="line">        ConfigRegistrar.setBasePackages(attributes);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//&#x5DE5;&#x5177;</span></span><br><span class="line">        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, SpringUtils.class.getName(), SpringUtils.class);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//&#x6536;&#x96C6;&#x672C;&#x5730;&#x73AF;&#x5883;&#x53D8;&#x91CF;&#x3001;&#x751F;&#x6210;&#x670D;&#x52A1;&#x4FE1;&#x606F;</span></span><br><span class="line">        <span class="hljs-comment">//-----&gt;SPI&#x5B9E;&#x73B0;&#xFF0C;&#x672C;&#x5730;&#x53D8;&#x91CF;&#x7684;&#x624B;&#x673A;&#x548C;Service&#x7AEF;&#x663E;&#x793A;&#x7684;&#x670D;&#x52A1;&#x4FE1;&#x606F;&#x53EF;&#x81EA;&#x5B9A;&#x4E49;&#x5B9E;&#x73B0;</span></span><br><span class="line">        Map&lt;String, Object&gt; envPropertyValues = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        envPropertyValues.put(<span class="hljs-string">&quot;importingClassMetadata&quot;</span>, importingClassMetadata);</span><br><span class="line">        InitEnvironment env = SpiServiceUtil.loadFirst(InitEnvironment.class);</span><br><span class="line">        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, InitEnvironment.class.getName(), env.getClass(), envPropertyValues);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//&#x6536;&#x96C6;&#x672C;&#x5730;&#x914D;&#x7F6E;&amp;&#x56DE;&#x8C03;&#x65B9;&#x6CD5;</span></span><br><span class="line">        Map&lt;String, Object&gt; processorPropertyValues = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        processorPropertyValues.put(<span class="hljs-string">&quot;importingClassMetadata&quot;</span>, importingClassMetadata);</span><br><span class="line">        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, SpringValueProcessor.class.getName(), SpringValueProcessor.class, processorPropertyValues);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//&#x542F;&#x52A8;&#x5668;&#x6CE8;&#x518C;</span></span><br><span class="line">        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, ConfigPostConstructProcessor.class.getName(), ConfigPostConstructProcessor.class);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//redis&#x88C5;&#x8F7D;</span></span><br><span class="line">        ConfigCenter configCenter = SpiServiceUtil.loadFirst(ConfigCenter.class);</span><br><span class="line">        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, ConfigCenter.class.getName(), configCenter.getClass());</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//&#x6309;&#x7167;&#x672C;&#x5730;&#x73AF;&#x5883;&#x53D8;&#x91CF;&#x6536;&#x96C6;redis&#x4E2D;&#x7684;&#x914D;&#x7F6E;&#xFF08;&#xFF09;</span></span><br><span class="line">        <span class="hljs-comment">//&#x5411;redis&#x63D0;&#x4F9B;&#x5F53;&#x524D;&#x670D;&#x52A1;&#x4FE1;&#x606F;</span></span><br><span class="line">        <span class="hljs-comment">//------&gt;SPI&#x5B9E;&#x73B0;&#xFF0C;&#x53EF;&#x66FF;&#x6362;redis&#x4E3A;&#x5176;&#x4ED6;&#x4E2D;&#x95F4;&#x4EF6;</span></span><br><span class="line">        LoadConfig loadConfig = SpiServiceUtil.loadFirst(LoadConfig.class);</span><br><span class="line">        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, LoadConfig.class.getName(), loadConfig.getClass());</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//&#x914D;&#x7F6E;&#x53D8;&#x66F4;&#x8BA2;&#x9605;</span></span><br><span class="line">        Listener listener = SpiServiceUtil.loadFirst(Listener.class);</span><br><span class="line">        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, Listener.class.getName(), listener.getClass());</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//&#x5BA2;&#x6237;&#x7AEF;&#x901A;&#x77E5;&#x670D;&#x52A1;&#x7AEF;</span></span><br><span class="line">        NotifyFactory notifyFactory = SpiServiceUtil.loadFirst(NotifyFactory.class);</span><br><span class="line">        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, NotifyFactory.class.getName(), notifyFactory.getClass());</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//&#x914D;&#x7F6E;&#x53D8;&#x66F4;&#x542F;&#x52A8;&#x7C7B;</span></span><br><span class="line">        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, ConfigPostConstructProcessor.class.getName(), ConfigPostConstructProcessor.class);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//spring&#x5BB9;&#x5668;&#x5173;&#x95ED;&#x65F6;&#xFF0C;&#x9500;&#x6BC1;&#x5F53;&#x524D;&#x5B9E;&#x4F8B;&#x4FE1;&#x606F;</span></span><br><span class="line">        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, ApplicationEventListener.class.getName(), ApplicationEventListener.class);</span><br><span class="line"></span><br><span class="line">    }</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="3-&#x5BA2;&#x6237;&#x7AEF;&#x914D;&#x7F6E;&#x7684;&#x7EDF;&#x4E00;&#x6536;&#x96C6;"><a href="#3-&#x5BA2;&#x6237;&#x7AEF;&#x914D;&#x7F6E;&#x7684;&#x7EDF;&#x4E00;&#x6536;&#x96C6;" class="headerlink" title="3.&#x5BA2;&#x6237;&#x7AEF;&#x914D;&#x7F6E;&#x7684;&#x7EDF;&#x4E00;&#x6536;&#x96C6;"></a>3.&#x5BA2;&#x6237;&#x7AEF;&#x914D;&#x7F6E;&#x7684;&#x7EDF;&#x4E00;&#x6536;&#x96C6;</h2><p>&#x6536;&#x96C6;&#x914D;&#x7F6E;&#x65F6;&#xFF0C;&#x8003;&#x8651;&#x5230;&#x628A;&#x5BF9;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x7684;&#x4EE3;&#x7801;&#x4FB5;&#x5165;&#x6027;&#x964D;&#x5230;&#x6700;&#x4F4E;&#xFF0C;&#x6211;&#x4EEC;&#x51B3;&#x5B9A;&#x9488;&#x5BF9;Spring&#x81EA;&#x8EAB;@Value&#x6CE8;&#x89E3;&#x548C;@ConfigurationProperties&#x6CE8;&#x89E3;&#x8FDB;&#x884C;&#x6536;&#x96C6;&#x3002;&#x597D;&#x5904;&#x662F;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x65E0;&#x9700;&#x5F15;&#x5165;&#x5176;&#x4ED6;&#x7684;&#x5B66;&#x4E60;&#x6210;&#x672C;&#xFF0C;&#x5728;&#x4E0D;&#x53D8;&#x66F4;&#x73B0;&#x6709;&#x5F00;&#x53D1;&#x6A21;&#x5F0F;&#x4E0B;&#x5C31;&#x80FD;&#x8FDB;&#x884C;&#x914D;&#x7F6E;&#x9879;&#x7684;&#x6536;&#x96C6;&#x4E0E;&#x7BA1;&#x7406;&#x3002;</p>
+<p>&#x6B64;&#x5916;&#xFF0C;&#x9488;&#x5BF9;&#x914D;&#x7F6E;&#x7BA1;&#x7406;&#x7684;&#x4E00;&#x4E9B;&#x7279;&#x6B8A;&#x66F4;&#x80FD;&#xFF0C;&#x6211;&#x4EEC;&#x8BBE;&#x8BA1;&#x4E86;&#x626B;&#x5305;&#x8DEF;&#x5F84;&#x3002;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x9700;&#x8981;&#x8BBE;&#x5B9A;&#x626B;&#x5305;&#x8DEF;&#x5F84;&#xFF0C;&#x4ECE;&#x800C;&#x5BF9;&#x5173;&#x5FC3;&#x7684;&#x914D;&#x7F6E;&#x8FDB;&#x884C;&#x8FDC;&#x7A0B;&#x7BA1;&#x7406;&#x3002;&#x540C;&#x65F6;&#x6211;&#x4EEC;&#x63D0;&#x4F9B;&#x4E86;@NadiaConfig&#x6CE8;&#x89E3;&#xFF0C;&#x4E00;&#x65E6;&#x6807;&#x8BB0;&#x4E0A;&#x8BE5;&#x6CE8;&#x89E3;&#x540E;&#x3002;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x53EF;&#x4EE5;&#x9488;&#x5BF9;&#x914D;&#x7F6E;&#x7684;&#x53D8;&#x66F4;&#x8FDB;&#x884C;&#x81EA;&#x5B9A;&#x4E49;&#x7684;&#x56DE;&#x8C03;&#x5904;&#x7406;&#x3002;</p>
+<figure class="highlight java hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Target({ElementType.FIELD,ElementType.CONSTRUCTOR})</span></span><br><span class="line"><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="hljs-meta">@Documented</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> NadiaConfig {</span><br><span class="line">    Class&lt;? extends Callback&gt; clazz();</span><br><span class="line"></span><br><span class="line">    CallbackScenes[] callbackScenes() <span class="hljs-keyword">default</span> {CallbackScenes.UPDATE_VALUE, CallbackScenes.SWITCH_GROUP};</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">exclude</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">false</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">CallbackScenes</span> </span>{</span><br><span class="line">        INIT,</span><br><span class="line">        SWITCH_GROUP,</span><br><span class="line">        UPDATE_VALUE,</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>&#x5B9E;&#x73B0;BeanPostProcessor&#x63A5;&#x53E3;&#x540E;&#xFF0C;&#x5728;Bean&#x7684;&#x540E;&#x7F6E;&#x5904;&#x7406;&#x903B;&#x8F91;&#x4E2D;&#x6211;&#x4EEC;&#x4F1A;&#x6536;&#x96C6;&#x6307;&#x5B9A;&#x5305;&#x4E0B;&#x7684;&#x914D;&#x7F6E;</p>
+<figure class="highlight java hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SpringValueProcessor</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractMetadata</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">BeanPostProcessor</span>, <span class="hljs-title">PriorityOrdered</span> </span>{</span><br><span class="line"></span><br><span class="line">    ....</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">processField</span><span class="hljs-params">(Object bean, String beanName, Field field)</span> </span>{</span><br><span class="line">        <span class="hljs-comment">// register @Value on field</span></span><br><span class="line">        Value value = field.getAnnotation(Value.class);</span><br><span class="line">        <span class="hljs-keyword">if</span> (value == <span class="hljs-keyword">null</span>) {</span><br><span class="line">            <span class="hljs-keyword">return</span>;</span><br><span class="line">        }</span><br><span class="line">        Set&lt;String&gt; keys = PlaceholderHelper.extractPlaceholderKeys(value.value());</span><br><span class="line">        <span class="hljs-keyword">if</span> (keys.isEmpty()) {</span><br><span class="line">            <span class="hljs-keyword">return</span>;</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">for</span> (String key : keys) {</span><br><span class="line">            Config config = generateConfig(bean, beanName, key, field);</span><br><span class="line">            ConfigContextHolder.setConfigHolder(key, config);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> Config <span class="hljs-title">generateConfig</span><span class="hljs-params">(Object bean, String beanName, String key, Field field)</span> </span>{</span><br><span class="line">        NadiaConfig nadiaConfig = field.getAnnotation(NadiaConfig.class);</span><br><span class="line">        Class&lt;? extends Callback&gt; callback = <span class="hljs-keyword">null</span>;</span><br><span class="line">        Set&lt;NadiaConfig.CallbackScenes&gt; callbackScenesSet = <span class="hljs-keyword">null</span>;</span><br><span class="line">        <span class="hljs-keyword">if</span> (nadiaConfig != <span class="hljs-keyword">null</span>) {</span><br><span class="line">            <span class="hljs-keyword">if</span>(nadiaConfig.exclude()){</span><br><span class="line">                <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;</span><br><span class="line">            }</span><br><span class="line">            callback = nadiaConfig.clazz();</span><br><span class="line">            callbackScenesSet = getCallbackScenes(nadiaConfig);</span><br><span class="line">        }</span><br><span class="line">        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Config(ConfigTypeEnum.FIELD,</span><br><span class="line">                beanName,</span><br><span class="line">                bean.getClass(),</span><br><span class="line">                key, field,</span><br><span class="line">                <span class="hljs-keyword">null</span>,</span><br><span class="line">                FieldUtil.getValue(bean, field),</span><br><span class="line">                callback,</span><br><span class="line">                callbackScenesSet,</span><br><span class="line">                field.getType(),</span><br><span class="line">                bean);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    ....</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="4-&#x542F;&#x52A8;&#x914D;&#x7F6E;&#x672C;&#x5730;&#x914D;&#x7F6E;&#x66F4;&#x65B0;&#x7684;&#x6A21;&#x677F;&#x6D41;&#x7A0B;"><a href="#4-&#x542F;&#x52A8;&#x914D;&#x7F6E;&#x672C;&#x5730;&#x914D;&#x7F6E;&#x66F4;&#x65B0;&#x7684;&#x6A21;&#x677F;&#x6D41;&#x7A0B;" class="headerlink" title="4.&#x542F;&#x52A8;&#x914D;&#x7F6E;&#x672C;&#x5730;&#x914D;&#x7F6E;&#x66F4;&#x65B0;&#x7684;&#x6A21;&#x677F;&#x6D41;&#x7A0B;"></a>4.&#x542F;&#x52A8;&#x914D;&#x7F6E;&#x672C;&#x5730;&#x914D;&#x7F6E;&#x66F4;&#x65B0;&#x7684;&#x6A21;&#x677F;&#x6D41;&#x7A0B;</h2><p>&#x53EF;&#x4EE5;&#x770B;&#x5230;&#xFF0C;&#x6A21;&#x677F;&#x6A21;&#x5F0F;&#x6307;&#x5B9A;&#x4E86;&#x4E00;&#x5957;&#x8FDC;&#x7A0B;&#x914D;&#x7F6E;&#x66F4;&#x65B0;&#x81F3;&#x672C;&#x5730;&#x7684;&#x6D41;&#x7A0B;&#x3002;&#x7ED3;&#x5408;SPI&#x7684;&#x7279;&#x6027;&#xFF0C;&#x53EF;&#x4EE5;&#x5B58;&#x5728;&#x591A;&#x79CD;&#x7684;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#x3002;</p>
+<figure class="highlight java hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Component</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConfigBootstart</span> </span>{</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Autowired</span></span><br><span class="line">    <span class="hljs-keyword">private</span> InitEnvironment initEnvironment;</span><br><span class="line">    <span class="hljs-meta">@Autowired</span></span><br><span class="line">    <span class="hljs-keyword">private</span> LoadConfig loadConfig;</span><br><span class="line">    <span class="hljs-meta">@Autowired</span></span><br><span class="line">    <span class="hljs-keyword">private</span> Listener listener;</span><br><span class="line">    <span class="hljs-meta">@Autowired</span></span><br><span class="line">    <span class="hljs-keyword">private</span> NotifyFactory notifyFactory;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">start</span><span class="hljs-params">()</span></span>{</span><br><span class="line">        <span class="hljs-comment">//bootstart notify start</span></span><br><span class="line">        notifyFactory.startPush();</span><br><span class="line">        <span class="hljs-comment">//env</span></span><br><span class="line">        initEnvironment.init();</span><br><span class="line">        <span class="hljs-comment">//config</span></span><br><span class="line">        loadConfig.load();</span><br><span class="line">        loadConfig.updateClientValues();</span><br><span class="line">        loadConfig.onlineClientInGroup();</span><br><span class="line">        loadConfig.pushClientConfigs();</span><br><span class="line">        loadConfig.keepClientAlive();</span><br><span class="line">        <span class="hljs-comment">//watch</span></span><br><span class="line">        listener.init();</span><br><span class="line">        <span class="hljs-comment">//bootstart notify end</span></span><br><span class="line">        notifyFactory.stopPush();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="5-Redis&#x5B9E;&#x73B0;&#x914D;&#x7F6E;&#x7684;&#x66F4;&#x65B0;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x4E0A;&#x4E0B;&#x7EBF;"><a href="#5-Redis&#x5B9E;&#x73B0;&#x914D;&#x7F6E;&#x7684;&#x66F4;&#x65B0;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x4E0A;&#x4E0B;&#x7EBF;" class="headerlink" title="5.Redis&#x5B9E;&#x73B0;&#x914D;&#x7F6E;&#x7684;&#x66F4;&#x65B0;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x4E0A;&#x4E0B;&#x7EBF;"></a>5.Redis&#x5B9E;&#x73B0;&#x914D;&#x7F6E;&#x7684;&#x66F4;&#x65B0;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x4E0A;&#x4E0B;&#x7EBF;</h2><p>&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x7528;Redis&#x5B9E;&#x73B0;AbstractLoadConfig&#x5B9A;&#x4E49;&#x597D;&#x7684;&#x6A21;&#x677F;&#x65B9;&#x6CD5;&#xFF0C;&#x5305;&#x62EC;&#x914D;&#x7F6E;&#x4ECE;redis&#x7684;&#x62C9;&#x53D6;&#x3001;&#x66F4;&#x65B0;&#x672C;&#x5730;&#x914D;&#x7F6E;&#x3001;&#x5BA2;&#x6237;&#x7AEF;&#x5FC3;&#x8DF3;&#x7684;&#x4E0A;&#x62A5;&#x3001;&#x5BA2;&#x6237;&#x7AEF;&#x4E0A;&#x7EBF;&#x901A;&#x77E5;&#x3001;&#x5BA2;&#x6237;&#x7AEF;&#x4E0B;&#x7EBF;&#x901A;&#x77E5;</p>
+<figure class="highlight java hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RedisLoadConfig</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractLoadConfig</span> </span>{</span><br><span class="line">    <span class="hljs-meta">@Resource</span></span><br><span class="line">    <span class="hljs-keyword">private</span> ConfigCenterRedisService configCenterRedisService;</span><br><span class="line">    <span class="hljs-meta">@Resource</span></span><br><span class="line">    <span class="hljs-keyword">private</span> RedisPubSub redisPubSub;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">load</span><span class="hljs-params">()</span> </span>{</span><br><span class="line">        <span class="hljs-comment">//get redis info</span></span><br><span class="line">        <span class="hljs-keyword">this</span>.load(initEnvironment.getClientInfo().getApplication(), initEnvironment.getClientInfo().getGroup());</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">load</span><span class="hljs-params">(String application, String group)</span> </span>{</span><br><span class="line">        String configKey = RedisKeyUtil.getGroupConfig(application, group);</span><br><span class="line">        Map&lt;String, String&gt; configs = configCenterRedisService.hgetAll(configKey);</span><br><span class="line">        RemoteContextHolder.setRemoteHolder(configKey, configs);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">getValue</span><span class="hljs-params">(String key)</span> </span>{</span><br><span class="line">        <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onlineClientInGroup</span><span class="hljs-params">()</span> </span>{</span><br><span class="line">        ClientInfo clientInfo = initEnvironment.getClientInfo();</span><br><span class="line">        String applicationGroup = RedisKeyUtil.getInstance(clientInfo.getApplication(), clientInfo.getGroup());</span><br><span class="line">        configCenterRedisService.sadd(applicationGroup, clientInfo.getName());</span><br><span class="line">        log.info(<span class="hljs-string">&quot;========================= onlineClientInGroup key[{}] value[{}] =========================&quot;</span>, applicationGroup, clientInfo.getName());</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">offlineClientInGroup</span><span class="hljs-params">()</span> </span>{</span><br><span class="line">        ClientInfo clientInfo = initEnvironment.getClientInfo();</span><br><span class="line">        String applicationGroup = RedisKeyUtil.getInstance(clientInfo.getApplication(), clientInfo.getGroup());</span><br><span class="line">        configCenterRedisService.del(applicationGroup, clientInfo.getName());</span><br><span class="line">        log.info(<span class="hljs-string">&quot;========================= offlineClientInGroup key[{}] value[{}] =========================&quot;</span>, applicationGroup, clientInfo.getName());</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">offlineClientConfigs</span><span class="hljs-params">()</span> </span>{</span><br><span class="line">        ClientInfo clientInfo = initEnvironment.getClientInfo();</span><br><span class="line">        String instanceConfig = RedisKeyUtil.getInstanceConfig(clientInfo.getApplication(), clientInfo.getGroup(), clientInfo.getName());</span><br><span class="line">        configCenterRedisService.del(instanceConfig);</span><br><span class="line">        log.info(<span class="hljs-string">&quot;========================= offlineClientConfigs key[{}] =========================&quot;</span>, instanceConfig);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">keepClientAlive</span><span class="hljs-params">()</span> </span>{</span><br><span class="line">        ClientInfo clientInfo = initEnvironment.getClientInfo();</span><br><span class="line">        <span class="hljs-comment">//push client info to redis schedule</span></span><br><span class="line">        Executors.newScheduledThreadPool(<span class="hljs-number">1</span>).scheduleAtFixedRate(<span class="hljs-keyword">new</span> Runnable() {</span><br><span class="line">            <span class="hljs-meta">@Override</span></span><br><span class="line">            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{</span><br><span class="line">                log.info(<span class="hljs-string">&quot;========================= Client Keep Alive with Redis Start =========================&quot;</span>);</span><br><span class="line">                clientInfo.setTimestamp(<span class="hljs-keyword">new</span> Date().getTime());</span><br><span class="line">                String hashCode = String.valueOf(clientInfo.hashCode());</span><br><span class="line">                log.info(<span class="hljs-string">&quot;========================= Client Keep Alive hashCode:[{}] clientInfo:[{}] =========================&quot;</span>, hashCode, clientInfo);</span><br><span class="line">                configCenterRedisService.hset(RedisKeyUtil.getClints(), hashCode, JSONObject.toJSONString(clientInfo));</span><br><span class="line">                log.info(<span class="hljs-string">&quot;========================= Client Keep Alive with Redis End   =========================&quot;</span>);</span><br><span class="line">            }</span><br><span class="line">        }, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, TimeUnit.MINUTES);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pushClientConfig</span><span class="hljs-params">(String key, String value)</span> </span>{</span><br><span class="line">        String configKey = RedisKeyUtil.getInstanceConfig(initEnvironment.getClientInfo().getApplication(),</span><br><span class="line">                initEnvironment.getClientInfo().getGroup(), initEnvironment.getClientInfo().getName());</span><br><span class="line">        configCenterRedisService.hset(configKey, key, value);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pushClientConfigs</span><span class="hljs-params">()</span> </span>{</span><br><span class="line">        ClientInfo clientInfo = initEnvironment.getClientInfo();</span><br><span class="line">        configCenterRedisService.del(RedisKeyUtil.getInstanceConfig(clientInfo.getApplication(), clientInfo.getGroup(), clientInfo.getName()));</span><br><span class="line">        Map&lt;String, String&gt; clientConfigs = ConfigContextHolder.getClientConfigs();</span><br><span class="line">        clientConfigs.forEach((k, v) -&gt; {</span><br><span class="line">            configCenterRedisService.hset(RedisKeyUtil.getInstanceConfig(clientInfo.getApplication(), clientInfo.getGroup(), clientInfo.getName()), k, v);</span><br><span class="line">        });</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">notificServer</span><span class="hljs-params">(String message,EventType type , LogLevelEnum level)</span> </span>{</span><br><span class="line">        redisPubSub.notifyServer(initEnvironment.getClientInfo(), type, level,message);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">offlineClientInfo</span><span class="hljs-params">()</span> </span>{</span><br><span class="line">        ClientInfo clientInfo = initEnvironment.getClientInfo();</span><br><span class="line">        configCenterRedisService.del(RedisKeyUtil.getClints(),String.valueOf(clientInfo.hashCode()));</span><br><span class="line">        log.info(<span class="hljs-string">&quot;========================= delete client info  key[{}] value[{}]=========================&quot;</span>, RedisKeyUtil.getClints(),clientInfo.hashCode());</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pushClinetInfo</span><span class="hljs-params">()</span> </span>{</span><br><span class="line">        ClientInfo clientInfo = initEnvironment.getClientInfo();</span><br><span class="line">        configCenterRedisService.hset(RedisKeyUtil.getClints(), String.valueOf(clientInfo.hashCode()), JSONObject.toJSONString(clientInfo));</span><br><span class="line">        log.info(<span class="hljs-string">&quot;========================= push client info  key[{}] value[{}]=========================&quot;</span>, RedisKeyUtil.getClints(),clientInfo.hashCode());</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="6-Redis&#x5B9E;&#x73B0;&#x8FDC;&#x7A0B;&#x914D;&#x7F6E;&#x7684;&#x5B9E;&#x65F6;&#x540C;&#x6B65;"><a href="#6-Redis&#x5B9E;&#x73B0;&#x8FDC;&#x7A0B;&#x914D;&#x7F6E;&#x7684;&#x5B9E;&#x65F6;&#x540C;&#x6B65;" class="headerlink" title="6.Redis&#x5B9E;&#x73B0;&#x8FDC;&#x7A0B;&#x914D;&#x7F6E;&#x7684;&#x5B9E;&#x65F6;&#x540C;&#x6B65;"></a>6.Redis&#x5B9E;&#x73B0;&#x8FDC;&#x7A0B;&#x914D;&#x7F6E;&#x7684;&#x5B9E;&#x65F6;&#x540C;&#x6B65;</h2><p>&#x914D;&#x7F6E;&#x4FE1;&#x606F;&#x7684;&#x5B9E;&#x65F6;&#x540C;&#x6B65;&#x4E3B;&#x8981;&#x91C7;&#x7528;&#x4E86;Redis&#x7684;&#x76D1;&#x542C;&#x529F;&#x80FD;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x542F;&#x52A8;&#x540E;&#x76D1;&#x542C;&#x7279;&#x6B8A;&#x901A;&#x9053;&#x7684;&#x4FE1;&#x606F;&#xFF0C;&#x5E76;&#x5265;&#x79BB;&#x51FA;&#x81EA;&#x5DF1;&#x611F;&#x5174;&#x8DA3;&#x7684;&#x4FE1;&#x606F;&#x8FDB;&#x884C;&#x5904;&#x7406;&#x3002;</p>
+<figure class="highlight java hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyMessageListener</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">MessageListener</span> </span>{</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">private</span> LoadConfig loadConfig;</span><br><span class="line"></span><br><span class="line">        MyMessageListener(LoadConfig loadConfig) {</span><br><span class="line">            <span class="hljs-keyword">this</span>.loadConfig = loadConfig;</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="hljs-meta">@Override</span></span><br><span class="line">        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onMessage</span><span class="hljs-params">(Message message, <span class="hljs-keyword">byte</span>[] pattern)</span> </span>{</span><br><span class="line">            notifyFactory.startPush();</span><br><span class="line">            MessageBody messageBody = MessageConvert.unpackageMessage(message.toString());</span><br><span class="line">            <span class="hljs-keyword">if</span> (messageBody <span class="hljs-keyword">instanceof</span> UpdateValueMessageBody) {</span><br><span class="line">                log.info(<span class="hljs-string">&quot;receive UpdateValueMessageBody start&quot;</span>);</span><br><span class="line">                redisPubSub.notifyServer(initEnvironment.getClientInfo(), EventType.CLIENT_MESSAGE, LogLevelEnum.LOG,<span class="hljs-string">&quot;receive UpdateValueMessageBody start&quot;</span>);</span><br><span class="line">                UpdateValueMessageBody updateValueMessageBody = (UpdateValueMessageBody) messageBody;</span><br><span class="line">                String group = initEnvironment.getClientInfo().getGroup();</span><br><span class="line">                <span class="hljs-keyword">if</span> (group.equals(updateValueMessageBody.getGroup())) {</span><br><span class="line">                    <span class="hljs-comment">//updateClientValue local value</span></span><br><span class="line">                    <span class="hljs-keyword">boolean</span> hasFaile = loadConfig.updateClientValue(updateValueMessageBody.getKey(), updateValueMessageBody.getValue(), NadiaConfig.CallbackScenes.UPDATE_VALUE);</span><br><span class="line">                    <span class="hljs-keyword">if</span>(!hasFaile){</span><br><span class="line">                        Object oldValue = ConfigContextHolder.getOldValue(updateValueMessageBody.getKey());</span><br><span class="line">                        <span class="hljs-comment">// update server value</span></span><br><span class="line">                        loadConfig.pushClientConfig(updateValueMessageBody.getKey(), ClientValueUtil.serializer(updateValueMessageBody.getValue(), oldValue));</span><br><span class="line">                    }</span><br><span class="line">                }</span><br><span class="line">            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (messageBody <span class="hljs-keyword">instanceof</span> SwitchInstanceMessageBody) {</span><br><span class="line">                log.info(<span class="hljs-string">&quot;receive SwitchInstanceMessageBody start&quot;</span>);</span><br><span class="line">                redisPubSub.notifyServer(initEnvironment.getClientInfo(), EventType.CLIENT_MESSAGE, LogLevelEnum.LOG,<span class="hljs-string">&quot;receive SwitchInstanceMessageBody start&quot;</span>);</span><br><span class="line">                SwitchInstanceMessageBody switchInstanceMessageBody = (SwitchInstanceMessageBody) messageBody;</span><br><span class="line">                <span class="hljs-comment">//update local value</span></span><br><span class="line">                loadConfig.switchGroup(switchInstanceMessageBody.getApplication(),switchInstanceMessageBody.getGroupFrom(),switchInstanceMessageBody.getGroupTo(),switchInstanceMessageBody.getInstance());</span><br><span class="line">            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (messageBody <span class="hljs-keyword">instanceof</span> HeartbeatMessageBody) {</span><br><span class="line">                log.info(<span class="hljs-string">&quot;receive HeartbeatMessageBody&quot;</span>);</span><br><span class="line"></span><br><span class="line">            }</span><br><span class="line">            notifyFactory.stopPush();</span><br><span class="line">        }</span><br><span class="line">    }</span><br></pre></td></tr></tbody></table></figure>
+
+
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Java/">#Java</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Redis/">#Redis</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/">#配置中心</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2020/05/16/%E5%9F%BA%E4%BA%8EFlink%E8%AE%BE%E8%AE%A1%E7%BB%9F%E4%B8%80%E6%8A%A5%E8%AD%A6%E5%B9%B3%E5%8F%B0/">基于Flink设计统一报警平台</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2020/04/12/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E8%AE%BE%E8%AE%A1%E7%AF%873/">我为什么会手撸一个配置中心-设计篇（三）</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+<div class="sharebox">
+    
+<div class="addthis_inline_share_toolbox"></div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5d71c42eb9261743"></script>
+
+</div>
+
+
+
+<div class="comments">
+    <h3 class="title is-4">评论</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://example.com/2020/04/18/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E9%87%8D%E6%96%B0%E5%86%99%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83-%E4%BB%A3%E7%A0%81%E7%AF%87/';
+        this.page.identifier = '2020/04/18/我为什么会重新写一个配置中心-代码篇/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'xzenge' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2020 Xiang Shi&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/nadia-repository">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+    <style>
+        .hljs {
+            position: relative;
+        }
+
+        .hljs .clipboard-btn {
+            float: right;
+            color: #9a9a9a;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hljs .clipboard-btn:hover {
+          color: #8a8a8a;
+        }
+
+        .hljs > .clipboard-btn {
+            display: none;
+            position: absolute;
+            right: 4px;
+            top: 4px;
+        }
+
+        .hljs:hover > .clipboard-btn {
+            display: inline;
+        }
+
+        .hljs > figcaption > .clipboard-btn {
+            margin-right: 4px;
+        }
+    </style>
+    <script>
+      $(document).ready(function () {
+        $('figure.hljs').each(function(i, figure) {
+          var codeId = 'code-' + i;
+          var code = figure.querySelector('.code');
+          var copyButton = $('<button>Copy <i class="far fa-clipboard"></i></button>');
+          code.id = codeId;
+          copyButton.addClass('clipboard-btn');
+          copyButton.attr('data-clipboard-target-id', codeId);
+
+          var figcaption = figure.querySelector('figcaption');
+
+          if (figcaption) {
+            figcaption.append(copyButton[0]);
+          } else {
+            figure.prepend(copyButton[0]);
+          }
+        })
+
+        var clipboard = new ClipboardJS('.clipboard-btn', {
+          target: function(trigger) {
+            return document.getElementById(trigger.getAttribute('data-clipboard-target-id'));
+          }
+        });
+        clipboard.on('success', function(e) {
+          e.clearSelection();
+        })
+      })
+    </script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="站内搜索" />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

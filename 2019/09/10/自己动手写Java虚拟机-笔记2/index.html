@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>自己动手写Java虚拟机 笔记2 - Hexo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="&amp;#x5B9E;&amp;#x73B0;cp&#x2F;classpath &amp;#x53C2;&amp;#x6570;&amp;#x641C;&amp;#x7D22;class&amp;#x6587;&amp;#x4EF6;java class path &amp;#x641C;&amp;#x7D22;&amp;#x987A;&amp;#x5E8F;&amp;#xFF1A; &amp;#x542F;&amp;#x52A8;&amp;#x7C7B;&amp;#x8DEF;&amp;#x5F84;&amp;#xFF08;bootstrap cla">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自己动手写Java虚拟机 笔记2">
+<meta property="og:url" content="http://example.com/2019/09/10/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%86%99Java%E8%99%9A%E6%8B%9F%E6%9C%BA-%E7%AC%94%E8%AE%B02/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="&amp;#x5B9E;&amp;#x73B0;cp&#x2F;classpath &amp;#x53C2;&amp;#x6570;&amp;#x641C;&amp;#x7D22;class&amp;#x6587;&amp;#x4EF6;java class path &amp;#x641C;&amp;#x7D22;&amp;#x987A;&amp;#x5E8F;&amp;#xFF1A; &amp;#x542F;&amp;#x52A8;&amp;#x7C7B;&amp;#x8DEF;&amp;#x5F84;&amp;#xFF08;bootstrap cla">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-09-10T13:47:52.000Z">
+<meta property="article:modified_time" content="2020-12-14T09:51:24.055Z">
+<meta property="article:author" content="Xiang Shi">
+<meta property="article:tag" content="JVM">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Go">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+<link rel="icon" href="/favicon.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147240985-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-147240985-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                <img src="/images/logo.png" alt="" height="28">
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories">Categories</a>
+            
+            <a class="navbar-item "
+               href="/tags">Tag</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="搜索" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/nadia-repository">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            自己动手写Java虚拟机 笔记2
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2019-09-10T13:47:52.000Z" itemprop="datePublished">9月 10 2019</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Technology/">Technology</a>
+        </span>
+        
+        
+        <span class="column is-narrow">
+            
+            
+            11 分钟 读完 (约 1577 字)
+        </span>
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><h2 id="&#x5B9E;&#x73B0;cp-classpath-&#x53C2;&#x6570;&#x641C;&#x7D22;class&#x6587;&#x4EF6;"><a href="#&#x5B9E;&#x73B0;cp-classpath-&#x53C2;&#x6570;&#x641C;&#x7D22;class&#x6587;&#x4EF6;" class="headerlink" title="&#x5B9E;&#x73B0;cp/classpath &#x53C2;&#x6570;&#x641C;&#x7D22;class&#x6587;&#x4EF6;"></a>&#x5B9E;&#x73B0;cp/classpath &#x53C2;&#x6570;&#x641C;&#x7D22;class&#x6587;&#x4EF6;</h2><h3 id="java-class-path-&#x641C;&#x7D22;&#x987A;&#x5E8F;&#xFF1A;"><a href="#java-class-path-&#x641C;&#x7D22;&#x987A;&#x5E8F;&#xFF1A;" class="headerlink" title="java class path &#x641C;&#x7D22;&#x987A;&#x5E8F;&#xFF1A;"></a>java class path &#x641C;&#x7D22;&#x987A;&#x5E8F;&#xFF1A;</h3><ol>
+<li>&#x542F;&#x52A8;&#x7C7B;&#x8DEF;&#x5F84;&#xFF08;bootstrap classpath&#xFF09;:jre\lib &#xFF08;&#x53EF;&#x901A;&#x8FC7;-Xbootclasspath&#x53C2;&#x6570;&#x4FEE;&#x6539;&#x8BE5;&#x8DEF;&#x5F84;&#xFF09;</li>
+<li>&#x6269;&#x5C55;&#x7C7B;&#x8DEF;&#x5F84;&#xFF08;extension classpath&#xFF09;:jre\lib\ext</li>
+<li>&#x7528;&#x6237;&#x7C7B;&#x8DEF;&#x5F84;&#xFF08;user classpath&#xFF09;:&#x7528;&#x6237;&#x81EA;&#x5DF1;&#x6307;&#x5B9A;</li>
+</ol>
+<a id="more"></a>
+
+<h3 id="&#x5B9E;&#x73B0;"><a href="#&#x5B9E;&#x73B0;" class="headerlink" title="&#x5B9E;&#x73B0;"></a>&#x5B9E;&#x73B0;</h3><ol>
+<li>Entry&#x63A5;&#x53E3;&#x7528;&#x6765;&#x5B9A;&#x4E49;&#x542F;&#x52A8;&#x7C7B;&#x7684;&#x57FA;&#x672C;&#x529F;&#x80FD;</li>
+</ol>
+<figure class="highlight go hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> pathListSeparator = <span class="hljs-keyword">string</span>(os.PathListSeparator) <span class="hljs-comment">//&#x83B7;&#x53D6;&#x5F53;&#x524D;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x5206;&#x9694;&#x7B26;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">type</span> Entry <span class="hljs-keyword">interface</span> {</span><br><span class="line">	readClass(classNme <span class="hljs-keyword">string</span>) ([]<span class="hljs-keyword">byte</span>,Entry,error) <span class="hljs-comment">//&#x5B9A;&#x4E49;&#x6309;class&#x540D;&#x8BFB;&#x53D6;class&#x6587;&#x4EF6;&#x7684;&#x65B9;</span></span><br><span class="line">	String() <span class="hljs-keyword">string</span> </span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">//&#x6839;&#x636E;classpath&#x751F;&#x6210;&#x5BF9;&#x5E94;&#x7684;&#x542F;&#x52A8;&#x7C7B;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">newEntry</span><span class="hljs-params">(path <span class="hljs-keyword">string</span>)</span> <span class="hljs-title">Entry</span></span> {</span><br><span class="line">	<span class="hljs-keyword">if</span> strings.Contains(path,pathListSeparator){ <span class="hljs-comment">//classpath&#x8DEF;&#x5F84;&#x5305;&#x542B;&#x7CFB;&#x7EDF;&#x5206;&#x5272;&#x7B26;&#x65F6;&#xFF0C;new&#x7EC4;&#x5408;&#x542F;&#x52A8;&#x7C7B;</span></span><br><span class="line">		<span class="hljs-keyword">return</span> newCompositeEntry(path)</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">if</span> strings.HasSuffix(path,<span class="hljs-string">&quot;*&quot;</span>) {</span><br><span class="line">		<span class="hljs-keyword">return</span> newWildcardEntry(path) <span class="hljs-comment">//classpath&#x8DEF;&#x5F84;&#x5305;&#x542B;*&#x65F6;&#xFF0C;new&#x901A;&#x914D;&#x7B26;&#x542F;&#x52A8;&#x7C7B;</span></span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">if</span> strings.HasSuffix(path, <span class="hljs-string">&quot;.jar&quot;</span>) || strings.HasSuffix(path, <span class="hljs-string">&quot;.JAR&quot;</span>) ||</span><br><span class="line">      strings.HasSuffix(path, <span class="hljs-string">&quot;.zip&quot;</span>) || strings.HasSuffix(path, <span class="hljs-string">&quot;.ZIP&quot;</span>) {</span><br><span class="line">      <span class="hljs-keyword">return</span> newZipEntry(path) <span class="hljs-comment">//classpath&#x8DEF;&#x5F84;&#x5305;&#x542B;jar&#x3001;JAR&#x3001;zip&#x3001;ZIP&#x65F6;&#xFF0C;new&#x6587;&#x4EF6;&#x5939;&#x542F;&#x52A8;&#x7C7B;</span></span><br><span class="line">   }</span><br><span class="line">	<span class="hljs-keyword">return</span> newDirEntry(path)</span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<ol start="2">
+<li>Entry&#x63A5;&#x53E3;&#x7684;&#x5177;&#x4F53;&#x5B9E;&#x73B0;</li>
+</ol>
+<ul>
+<li><p>DirEntry&#xFF0C;&#x6309;&#x7167;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x8BFB;&#x53D6;&#x6587;&#x4EF6;&#x4E8C;&#x8FDB;&#x5236;&#x6D41; </p>
+<figure class="highlight golang hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">type</span> DirEntry <span class="hljs-keyword">struct</span> {</span><br><span class="line">	absDir <span class="hljs-keyword">string</span> <span class="hljs-comment">//&#x5B58;&#x50A8;&#x6587;&#x4EF6;&#x5939;&#x8DEF;&#x5F84;</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">newDirEntry</span><span class="hljs-params">(path <span class="hljs-keyword">string</span>)</span> *<span class="hljs-title">DirEntry</span></span> {</span><br><span class="line">	absDir,err := filepath.Abs(path) <span class="hljs-comment">//&#x5982;&#x679C;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x5B58;&#x5728;&#xFF0C;&#x83B7;&#x53D6;&#x6587;&#x4EF6;&#x5939;&#x8DEF;&#x5F84;</span></span><br><span class="line">	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> {</span><br><span class="line">		<span class="hljs-built_in">panic</span>(err) <span class="hljs-comment">//&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x4E0D;&#x5B58;&#x5728;&#x65F6;&#x63D0;&#x793A;&#x9519;&#x8BEF;</span></span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">return</span> &amp;DirEntry{absDir} <span class="hljs-comment">//&#x8FD4;&#x56DE;DirEntry&#x5B9E;&#x4F8B;</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *DirEntry)</span> <span class="hljs-title">readClass</span><span class="hljs-params">(className <span class="hljs-keyword">string</span>)</span> <span class="hljs-params">([]<span class="hljs-keyword">byte</span>,Entry,error)</span></span>{</span><br><span class="line">	fileName := filepath.Join(self.absDir,className) <span class="hljs-comment">//&#x62FC;&#x63A5;&#x6587;&#x4EF6;&#x5939;&#x8DEF;&#x5F84;&#x548C;classname</span></span><br><span class="line">	data,err := ioutil.ReadFile(fileName) <span class="hljs-comment">//&#x8BFB;&#x53D6;&#x6587;&#x4EF6;</span></span><br><span class="line">	<span class="hljs-keyword">return</span> data,self,err <span class="hljs-comment">//&#x8FD4;&#x56DE;&#x6587;&#x4EF6;&#x5185;&#x5BB9;</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(self *DirEntry)</span> <span class="hljs-title">String</span><span class="hljs-params">()</span> <span class="hljs-title">string</span></span> {</span><br><span class="line">	<span class="hljs-keyword">return</span> self.absDir <span class="hljs-comment">//&#x8FD4;&#x56DE;&#x6587;&#x4EF6;&#x5939;&#x8DEF;&#x5F84;</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>ZipEntry,&#x8BFB;&#x53D6;&#x538B;&#x7F29;&#x6587;&#x4EF6;&#x5939;&#x5185;&#x7684;&#x6587;&#x4EF6;</p>
+<figure class="highlight golang hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">type</span> ZipEnty <span class="hljs-keyword">struct</span> {</span><br><span class="line">	absPath <span class="hljs-keyword">string</span> <span class="hljs-comment">//&#x6587;&#x4EF6;&#x5939;&#x8DEF;&#x5F84;</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">newZipEntry</span><span class="hljs-params">(path <span class="hljs-keyword">string</span>)</span> *<span class="hljs-title">ZipEnty</span></span> {</span><br><span class="line">	absPath, err := filepath.Abs(path) <span class="hljs-comment">//&#x5982;&#x679C;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x5B58;&#x5728;&#xFF0C;&#x83B7;&#x53D6;&#x6587;&#x4EF6;&#x5939;&#x8DEF;&#x5F84;</span></span><br><span class="line">	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> {</span><br><span class="line">		<span class="hljs-built_in">panic</span>(err)</span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">return</span> &amp;ZipEnty{absPath}</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ZipEnty)</span> <span class="hljs-title">readClass</span><span class="hljs-params">(className <span class="hljs-keyword">string</span>)</span> <span class="hljs-params">([]<span class="hljs-keyword">byte</span>,Entry,error)</span></span>{</span><br><span class="line">	r, err := zip.OpenReader(self.absPath) <span class="hljs-comment">//&#x4EE5;&#x538B;&#x7F29;&#x6587;&#x4EF6;&#x683C;&#x5F0F;&#x89E3;&#x538B;</span></span><br><span class="line">	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> {</span><br><span class="line">	   <span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>, <span class="hljs-literal">nil</span>, err</span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">defer</span> r.Close() <span class="hljs-comment">//&#x6700;&#x540E;&#x5173;&#x95ED;&#x6587;&#x4EF6;&#x6D41;</span></span><br><span class="line">	<span class="hljs-keyword">for</span> _, f := <span class="hljs-keyword">range</span> r.File { <span class="hljs-comment">//&#x5FAA;&#x73AF;&#x89E3;&#x538B;&#x51FA;&#x6765;&#x7684;&#x6587;&#x4EF6;</span></span><br><span class="line">	   <span class="hljs-keyword">if</span> f.Name == className { <span class="hljs-comment">//&#x5982;&#x679C;&#x5F53;&#x524D;&#x6587;&#x4EF6;&#x4E3A;&#x6307;&#x5B9A;&#x6587;&#x4EF6;</span></span><br><span class="line">		  rc, err := f.Open() <span class="hljs-comment">//&#x6253;&#x5F00;&#x8BE5;&#x6587;&#x4EF6;</span></span><br><span class="line">		  <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> {</span><br><span class="line">			 <span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>, <span class="hljs-literal">nil</span>, err</span><br><span class="line">		  }</span><br><span class="line">		  <span class="hljs-keyword">defer</span> rc.Close() <span class="hljs-comment">//&#x6700;&#x540E;&#x5173;&#x95ED;&#x6587;&#x4EF6;</span></span><br><span class="line">		  data, err := ioutil.ReadAll(rc) <span class="hljs-comment">//&#x8BFB;&#x53D6;&#x6587;&#x4EF6;&#x6D41;</span></span><br><span class="line">		  <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> {</span><br><span class="line">			 <span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>, <span class="hljs-literal">nil</span>, err</span><br><span class="line">		  }</span><br><span class="line">		  <span class="hljs-keyword">return</span> data, self, <span class="hljs-literal">nil</span> <span class="hljs-comment">//&#x8FD4;&#x56DE;&#x6587;&#x4EF6;&#x6D41;</span></span><br><span class="line">	   }</span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>, <span class="hljs-literal">nil</span>, errors.New(<span class="hljs-string">&quot;class not found: &quot;</span> + className)</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ZipEnty)</span> <span class="hljs-title">String</span><span class="hljs-params">()</span> <span class="hljs-title">string</span></span> {</span><br><span class="line">	<span class="hljs-keyword">return</span> self.absPath</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>CompositeEntry,&#x8BFB;&#x53D6;&#x7B26;&#x5408;&#x6587;&#x4EF6;&#x7C7B;&#x578B;</p>
+<figure class="highlight golang hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">type</span> CompositeEntry []Entry <span class="hljs-comment">//CompositeEntry&#x4E3A;&#x591A;&#x79CD;Entry&#x7684;&#x6570;&#x7EC4;&#xFF08;Dir&#x3001;Zip&#xFF09;</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">newCompositeEntry</span><span class="hljs-params">(pathList <span class="hljs-keyword">string</span>)</span> <span class="hljs-title">CompositeEntry</span></span> {</span><br><span class="line">	compositeEntry := []Entry{} <span class="hljs-comment">//&#x5B9E;&#x4F8B;Entry&#x63A5;&#x53E3;&#x6570;&#x7EC4;</span></span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">for</span> _,path := <span class="hljs-keyword">range</span> strings.Split(pathList,pathListSeparator){ <span class="hljs-comment">//&#x6309;&#x7167;&#x7CFB;&#x7EDF;&#x5206;&#x5272;&#x7B26;&#x622A;&#x53D6;path&#x5217;&#x8868;&#xFF0C;&#x5E76;&#x5FAA;&#x73AF;</span></span><br><span class="line">		entry := newEntry(path) <span class="hljs-comment">//&#x6309;&#x7167;&#x6BCF;&#x79CD;path&#x5B9E;&#x4F8B;&#x5316;&#x4E0D;&#x540C;&#x7684;Entry(Dir&#x3001;Zip&#x3001;Wildcard)</span></span><br><span class="line">		compositeEntry = <span class="hljs-built_in">append</span>(compositeEntry,entry) <span class="hljs-comment">//&#x5C06;&#x5B9E;&#x4F8B;&#x5316;&#x7684;&#x4E0D;&#x540C;Entry&#x653E;&#x5165;CompositeEntry&#x6570;&#x7EC4;&#x4E2D;</span></span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">return</span> compositeEntry</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self CompositeEntry)</span> <span class="hljs-title">readClass</span><span class="hljs-params">(className <span class="hljs-keyword">string</span>)</span><span class="hljs-params">([]<span class="hljs-keyword">byte</span>,Entry,error)</span></span>{</span><br><span class="line">	<span class="hljs-keyword">for</span> _, entry := <span class="hljs-keyword">range</span> self { <span class="hljs-comment">//&#x5FAA;&#x73AF;compositeEntry&#x6570;&#x7EC4;</span></span><br><span class="line">		data, from, err := entry.readClass(className) <span class="hljs-comment">//&#x6839;&#x636E;&#x4E0D;&#x540C;Entry(Dir&#x3001;Zip&#x3001;Wildcard)&#xFF0C;&#x6309;&#x6307;&#x5B9A;classname&#x8BFB;&#x53D6;&#x6587;&#x4EF6;</span></span><br><span class="line">		<span class="hljs-keyword">if</span> err == <span class="hljs-literal">nil</span> {</span><br><span class="line">		   <span class="hljs-keyword">return</span> data, from, <span class="hljs-literal">nil</span> <span class="hljs-comment">//&#x8FD4;&#x56DE;&#x8BFB;&#x53D6;&#x7ED3;&#x679C;</span></span><br><span class="line">		}</span><br><span class="line">	 }</span><br><span class="line">	 <span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>, <span class="hljs-literal">nil</span>, errors.New(<span class="hljs-string">&quot;class not found: &quot;</span> + className) <span class="hljs-comment">//&#x65E0;&#x7ED3;&#x679C;&#x662F;&#x8FD4;&#x56DE;&#x9519;&#x8BEF;&#x4FE1;&#x606F;</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self CompositeEntry)</span> <span class="hljs-title">String</span><span class="hljs-params">()</span> <span class="hljs-title">string</span></span> {</span><br><span class="line">	strs := <span class="hljs-built_in">make</span>([]<span class="hljs-keyword">string</span>, <span class="hljs-built_in">len</span>(self)) <span class="hljs-comment">//&#x6309;&#x7167;CompositeEntry&#x7684;&#x957F;&#x5EA6;&#x7533;&#x660E;&#x8BE5;&#x957F;&#x5EA6;&#x7684;Sring&#x6570;&#x7EC4;</span></span><br><span class="line">	<span class="hljs-keyword">for</span> i, entry := <span class="hljs-keyword">range</span> self { <span class="hljs-comment">//&#x5FAA;&#x73AF;CompositeEntry</span></span><br><span class="line">	   strs[i] = entry.String() <span class="hljs-comment">//&#x8C03;&#x7528;&#x6BCF;&#x4E2A;Entry(Dir&#x3001;Zip&#x3001;Wildcard)&#x5B9E;&#x73B0;&#x7C7B;&#x7684;String()&#x65B9;&#x6CD5;,&#x5E76;&#x653E;&#x5165;String&#x6570;&#x7EC4;&#x4E2D;</span></span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">return</span> strings.Join(strs, pathListSeparator) <span class="hljs-comment">//&#x5C06;String&#x6570;&#x7EC4;&#x4E2D;&#x7684;&#x7ED3;&#x679C;&#x4EE5;&#x7CFB;&#x7EDF;&#x5206;&#x9694;&#x7B26;&#x62FC;&#x63A5;&#x5E76;&#x8FD4;&#x56DE;</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>WildcardEntry&#xFF0C;&#x6309;&#x7167;&#x901A;&#x914D;&#x7B26;&#x89E3;&#x6790;&#x6587;&#x4EF6;</p>
+<figure class="highlight golang hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">newWildcardEntry</span><span class="hljs-params">(path <span class="hljs-keyword">string</span>)</span> <span class="hljs-title">CompositeEntry</span></span> {</span><br><span class="line">	baseDir := path[:<span class="hljs-built_in">len</span>(path)<span class="hljs-number">-1</span>] <span class="hljs-comment">// remove *</span></span><br><span class="line">	compositeEntry := []Entry{} <span class="hljs-comment">//&#x7533;&#x660E;compositeEntry&#x5BF9;&#x8C61;(Entry&#x7684;&#x6570;&#x7EC4;)</span></span><br><span class="line">	walkFn := <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(path <span class="hljs-keyword">string</span>, info os.FileInfo, err error)</span> <span class="hljs-title">error</span></span> {</span><br><span class="line">		<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> {</span><br><span class="line">		   <span class="hljs-keyword">return</span> err</span><br><span class="line">		}</span><br><span class="line">		<span class="hljs-keyword">if</span> info.IsDir() &amp;&amp; path != baseDir { <span class="hljs-comment">//&#x5982;&#x679C;&#x5F53;&#x524D;&#x76EE;&#x5F55;&#x662F;&#x6587;&#x4EF6;&#x5939;&#xFF0C;&#x5E76;&#x4E14;&#x662F;&#x6839;&#x76EE;&#x5F55;</span></span><br><span class="line">		   <span class="hljs-keyword">return</span> filepath.SkipDir <span class="hljs-comment">//&#x8FD4;&#x56DE;SkipDir&#x7684;&#x9519;&#x8BEF;</span></span><br><span class="line">		}</span><br><span class="line">		<span class="hljs-keyword">if</span> strings.HasSuffix(path, <span class="hljs-string">&quot;.jar&quot;</span>) || strings.HasSuffix(path, <span class="hljs-string">&quot;.JAR&quot;</span>) { <span class="hljs-comment">//&#x5982;&#x679C;&#x5F53;&#x524D;&#x8DEF;&#x5F84;&#x662F;&#x4EE5;.jar&#x6216;.JAR&#x7ED3;&#x5C3E;&#x7684;</span></span><br><span class="line">			jarEntry := newZipEntry(path) <span class="hljs-comment">//&#x5B9E;&#x4F8B;&#x5316;ZipEntry</span></span><br><span class="line">			compositeEntry = <span class="hljs-built_in">append</span>(compositeEntry, jarEntry) <span class="hljs-comment">//&#x5C06;&#x5B9E;&#x4F8B;&#x5316;&#x7684;ZipEntry&#x5BF9;&#x8C61;&#x653E;&#x5165;compositeEntry&#x6570;&#x7EC4;&#x4E2D;</span></span><br><span class="line">		 }</span><br><span class="line">		 <span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span></span><br><span class="line">	  }</span><br><span class="line">	filepath.Walk(baseDir, walkFn) <span class="hljs-comment">//&#x5C06;walkFn&#x65B9;&#x6CD5;&#x4F20;&#x9012;&#x7ED9;filepath.Walk</span></span><br><span class="line">	<span class="hljs-keyword">return</span> compositeEntry <span class="hljs-comment">//&#x8FD4;&#x56DE;&#x7ED3;&#x679C;</span></span><br><span class="line"> }</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>Classpath&#xFF0C;-cp|classpath&#x53C2;&#x6570;&#x89E3;&#x6790;&#x5B9E;&#x73B0;&#x7684;&#x5165;&#x53E3;&#x65B9;&#x6CD5;</p>
+<figure class="highlight golang hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">type</span> Classpath <span class="hljs-keyword">struct</span> { <span class="hljs-comment">//Classpath&#x5305;&#x542B;java&#x7684;&#x4E09;&#x79CD;&#x57FA;&#x7840;&#x542F;&#x52A8;&#x8DEF;&#x5F84;</span></span><br><span class="line">	bootClasspath Entry </span><br><span class="line">	extClasspath Entry</span><br><span class="line">	userClasspath Entry</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Parse</span><span class="hljs-params">(jreOption, cpOption <span class="hljs-keyword">string</span>)</span> * <span class="hljs-title">Classpath</span></span>  {</span><br><span class="line">	cp := &amp;Classpath{} <span class="hljs-comment">//&#x5B9E;&#x4F8B;&#x5316;Classpath&#x5BF9;&#x8C61;</span></span><br><span class="line">	cp.parseBootAndExtClasspath(jreOption) <span class="hljs-comment">//&#x6309;&#x7167;-Xjre&#x53C2;&#x6570;&#x89E3;&#x6790;Boot&#x548C;Ext&#x542F;&#x52A8;&#x8DEF;&#x5F84;</span></span><br><span class="line">	cp.parseUserClasspath(cpOption) <span class="hljs-comment">//&#x6309;&#x7167;-cp|classpath&#x53C2;&#x6570;&#x89E3;&#x6790;User&#x542F;&#x52A8;&#x8DEF;&#x5F84;</span></span><br><span class="line">	<span class="hljs-keyword">return</span> cp <span class="hljs-comment">//&#x8FD4;&#x56DE;&#x8BBE;&#x7F6E;&#x597D;&#x542F;&#x52A8;&#x8DEF;&#x5F84;&#x7684;Classpath&#x5BF9;&#x8C61;</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *Classpath)</span> <span class="hljs-title">ReadClass</span><span class="hljs-params">(className <span class="hljs-keyword">string</span>)</span> <span class="hljs-params">([]<span class="hljs-keyword">byte</span>,Entry,error)</span></span>{</span><br><span class="line">	className = className + <span class="hljs-string">&quot;.class&quot;</span> <span class="hljs-comment">//&#x521D;&#x59CB;&#x5316;className&#x6587;&#x4EF6;&#x540D;</span></span><br><span class="line">	<span class="hljs-keyword">if</span> data, entry, err := self.bootClasspath.readClass(className); err == <span class="hljs-literal">nil</span> { <span class="hljs-comment">//&#x5148;&#x626B;&#x63CF;Boot&#x542F;&#x52A8;&#x8DEF;&#x5F84;&#x4E0B;&#x662F;&#x5426;&#x5B58;&#x5728;&#x8BE5;className.class&#x6587;&#x4EF6;</span></span><br><span class="line">	   <span class="hljs-keyword">return</span> data, entry, err <span class="hljs-comment">//&#x5B58;&#x5728;&#x5219;&#x8FD4;&#x56DE;</span></span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">if</span> data, entry, err := self.extClasspath.readClass(className); err == <span class="hljs-literal">nil</span> { <span class="hljs-comment">//&#x518D;&#x626B;&#x63CF;Ext&#x542F;&#x52A8;&#x8DEF;&#x5F84;&#x4E0B;&#x662F;&#x5426;&#x5B58;&#x5728;&#x8BE5;className.class&#x6587;&#x4EF6;</span></span><br><span class="line">	   <span class="hljs-keyword">return</span> data, entry, err <span class="hljs-comment">//&#x5B58;&#x5728;&#x5219;&#x8FD4;&#x56DE;</span></span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">return</span> self.userClasspath.readClass(className) <span class="hljs-comment">//&#x4EE5;&#x4E0A;&#x4E24;&#x4E2A;&#x8DEF;&#x5F84;&#x4E0B;&#x90FD;&#x4E0D;&#x5B58;&#x5728;&#xFF0C;&#x5219;&#x626B;&#x63CF;User&#x542F;&#x52A8;&#x8DEF;&#x5F84;</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *Classpath)</span> <span class="hljs-title">String</span><span class="hljs-params">()</span> <span class="hljs-title">string</span></span>  {</span><br><span class="line">	<span class="hljs-keyword">return</span> self.userClasspath.String()</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *Classpath)</span> <span class="hljs-title">parseBootAndExtClasspath</span><span class="hljs-params">(jreOption <span class="hljs-keyword">string</span>)</span></span> { <span class="hljs-comment">//&#x6309;&#x7167;-Xjre&#x53C2;&#x6570;&#x89E3;&#x6790;Boot&#x548C;Ext&#x542F;&#x52A8;&#x8DEF;&#x5F84;</span></span><br><span class="line">	jreDir := getJreDir(jreOption) <span class="hljs-comment">//&#x83B7;&#x53D6;jre&#x8DEF;&#x5F84;</span></span><br><span class="line">   <span class="hljs-comment">// jre/lib/*</span></span><br><span class="line">   jreLibPath := filepath.Join(jreDir, <span class="hljs-string">&quot;lib&quot;</span>, <span class="hljs-string">&quot;*&quot;</span>)</span><br><span class="line">   self.bootClasspath = newWildcardEntry(jreLibPath)</span><br><span class="line">   <span class="hljs-comment">// jre/lib/ext/*</span></span><br><span class="line">   jreExtPath := filepath.Join(jreDir, <span class="hljs-string">&quot;lib&quot;</span>, <span class="hljs-string">&quot;ext&quot;</span>, <span class="hljs-string">&quot;*&quot;</span>)</span><br><span class="line">   self.extClasspath = newWildcardEntry(jreExtPath)</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">getJreDir</span><span class="hljs-params">(jreOption <span class="hljs-keyword">string</span>)</span> <span class="hljs-title">string</span></span> {</span><br><span class="line">	<span class="hljs-keyword">if</span> jreOption != <span class="hljs-string">&quot;&quot;</span> &amp;&amp; exists(jreOption) { <span class="hljs-comment">//jreOption&#x4E0D;&#x4E3A;&#x7A7A;&#x4E14;&#x5B58;&#x5728;&#x65F6;&#x8FD4;&#x56DE;&#x8BE5;&#x8DEF;&#x5F84;</span></span><br><span class="line">	   <span class="hljs-keyword">return</span> jreOption</span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">if</span> exists(<span class="hljs-string">&quot;./jre&quot;</span>) { <span class="hljs-comment">//./jre&#x8DEF;&#x5F84;&#x5B58;&#x5728;&#x65F6;&#xFF0C;&#x8FD4;&#x56DE;.jre</span></span><br><span class="line">	   <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;./jre&quot;</span></span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">if</span> jh := os.Getenv(<span class="hljs-string">&quot;JAVA_HOME&quot;</span>); jh != <span class="hljs-string">&quot;&quot;</span> { <span class="hljs-comment">//&#x73AF;&#x5883;&#x53D8;&#x91CF;JAVA_HOME&#x5B58;&#x5728;&#x5E76;&#x4E14;&#x4E0D;&#x4E3A;&#x7A7A;&#x65F6;</span></span><br><span class="line">	   <span class="hljs-keyword">return</span> filepath.Join(jh, <span class="hljs-string">&quot;jre&quot;</span>) <span class="hljs-comment">//&#x8FD4;&#x56DE;JAVA_HOME + &quot;jre&quot;</span></span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-built_in">panic</span>(<span class="hljs-string">&quot;Can not find jre folder!&quot;</span>)</span><br><span class="line"> }</span><br><span class="line"></span><br><span class="line"> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">exists</span><span class="hljs-params">(path <span class="hljs-keyword">string</span>)</span> <span class="hljs-title">bool</span></span> {</span><br><span class="line">	<span class="hljs-keyword">if</span> _, err := os.Stat(path); err != <span class="hljs-literal">nil</span> {</span><br><span class="line">	   <span class="hljs-keyword">if</span> os.IsNotExist(err) {</span><br><span class="line">		  <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span></span><br><span class="line">	   }</span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span></span><br><span class="line"> }</span><br><span class="line"></span><br><span class="line"> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *Classpath)</span> <span class="hljs-title">parseUserClasspath</span><span class="hljs-params">(cpOption <span class="hljs-keyword">string</span>)</span></span> { <span class="hljs-comment">//&#x6309;&#x7167;-cp|classpath&#x53C2;&#x6570;&#x89E3;&#x6790;User&#x542F;&#x52A8;&#x53C2;&#x6570;</span></span><br><span class="line">	<span class="hljs-keyword">if</span> cpOption == <span class="hljs-string">&quot;&quot;</span> { <span class="hljs-comment">//cpOption&#x4E3A;&#x7A7A;&#x65F6;</span></span><br><span class="line">	   cpOption = <span class="hljs-string">&quot;.&quot;</span> <span class="hljs-comment">//&#x8FD4;&#x56DE;&#x76F8;&#x5BF9;&#x8DEF;&#x52B2;</span></span><br><span class="line">	}</span><br><span class="line">	self.userClasspath = newEntry(cpOption) <span class="hljs-comment">//&#x6839;&#x636E;-cp|classpath&#x53C2;&#x6570;&#x5B9E;&#x4F8B;&#x5316;&#x5BF9;&#x5E94;&#x7684;Entry</span></span><br><span class="line"> }</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>main&#xFF0C;&#x4FEE;&#x6539;&#x542F;&#x52A8;&#x7C7B;</p>
+<figure class="highlight golang hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">startJVM</span><span class="hljs-params">(cmd *Cmd)</span></span>{</span><br><span class="line">	cp := classpath.Parse(cmd.XjreOption, cmd.cpOption) <span class="hljs-comment">//&#x6839;&#x636E;-Xjre&#x548C;-cp|classpath&#x53C2;&#x6570;&#x5B9E;&#x4F8B;&#x5316;classpath&#x5BF9;&#x8C61;&#x5B9E;&#x4F8B;</span></span><br><span class="line">	fmt.Printf(<span class="hljs-string">&quot;classpath:%v class:%v args:%v\n&quot;</span>,</span><br><span class="line">	   cp, cmd.class, cmd.args)</span><br><span class="line">	className := strings.Replace(cmd.class, <span class="hljs-string">&quot;.&quot;</span>, <span class="hljs-string">&quot;/&quot;</span>, <span class="hljs-number">-1</span>)</span><br><span class="line">	classData, _, err := cp.ReadClass(className) <span class="hljs-comment">//&#x6309;&#x7167;3&#x4E2A;&#x542F;&#x52A8;&#x8DEF;&#x5F84;&#x67E5;&#x627E;&#x5E76;&#x8BFB;&#x53D6;className&#x6587;&#x4EF6;</span></span><br><span class="line">	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> {</span><br><span class="line">	   fmt.Printf(<span class="hljs-string">&quot;Could not find or load main class %s\n&quot;</span>, cmd.class)</span><br><span class="line">	   <span class="hljs-keyword">return</span></span><br><span class="line">	}</span><br><span class="line">	fmt.Printf(<span class="hljs-string">&quot;class data:%v\n&quot;</span>, classData)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+</li>
+</ul>
+<ol start="3">
+<li>&#x8BD5;&#x8FD0;&#x884C;<figure class="highlight shell hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">PS D:\work\workspace_go\src\jvmgo\ch02&gt; go install</span><br><span class="line"></span><br><span class="line">PS D:\work\workspace_go\bin&gt; .\ch02.exe -Xjre &quot;C:\Program Files\Java\jre1.8.0_202&quot; java.lang.Object</span><br><span class="line">classpath:D:\work\workspace_go\bin class:java.lang.Object args:[]</span><br><span class="line">class data:[202 254 186 190 0 0 0 52 0 75 3 0 15 66 63 8 0 16 8 0 36 8 0 40 1 0 3 40 41 73 1 0 20 40 41 76 106 97 118 97 47 108 97 110 103 47 79 98 106 101 99 116 59 1 0 20 40 41 76 106 97 118 97 47 108 97 110 103 47 83 116 114 105 110 103 59 1 0 3 40 41 86 1 0 21 40 73 41 76 106 97 118 97 47 108 97 110 103 47 83 116 114 105 110 103 59 1 0 4 40 74 41 86 1 0 5 40 74 73 41 86 1 0 21 40 76 106 97 118 97 47 108 97 110 103 47 79 98 106 101 99 116 59 41 90 1 0 21 40 76 106 97 118 97 47 108 97 110 103 47 83 116 114 105 110 103 59 41 86 1 0 8 60 99 108 105 110 105 116 62 1 0 6 60 105 110 105 116 62 1 0 1 64 1 0 4 67 111 100</span><br><span class="line">101 1 0 10 69 120 99 101 112 116 105 111 110 115 1 0 9 83 105 103 110 97 116 117 114 101 1 0 13 83 116 97 99 107 77 97 112 84 97 98 108 101 1 0 6 97 112 112 101 110 100 1 0 5 99 108 111 110 101 1 0 6 101 113</span><br><span class="line">117 97 108 115 1 0 8 102 105 110 97 108 105 122 101 1 0 8 103 101 116 67 108 97 115 115 1 0 7 103 101 116 78 97 109 101 1 0 8 104 97 115 104 67 111 100 101 1 0 15 106 97 118 97 47 108 97 110 103 47 67 108 97</span><br><span class="line">115 115 1 0 36 106 97 118 97 47 108 97 110 103 47 67 108 111 110 101 78 111 116 83 117 112 112 111 114 116 101 100 69 120 99 101 112 116 105 111 110 1 0 34 106 97 118 97 47 108 97 110 103 47 73 108 108 101 103 97 108 65 114 103 117 109 101 110 116 69 120 99 101 112 116 105 111 110 1 0 17 106 97 118 97 47 108 97 110 103 47 73 110 116 101 103 101 114 1 0 30 106 97 118 97 47 108 97 110 103 47 73 110 116 101 114 114</span><br><span class="line">117 112 116 101 100 69 120 99 101 112 116 105 111 110 1 0 16 106 97 118 97 47 108 97 110 103 47 79 98 106 101 99 116 1 0 23 106 97 118 97 47 108 97 110 103 47 83 116 114 105 110 103 66 117 105 108 100 101 114 1 0 19 106 97 118 97 47 108 97 110 103 47 84 104 114 111 119 97 98 108 101 1 0 37 110 97 110 111 115 101 99 111 110 100 32 116 105 109 101 111 117 116 32 118 97 108 117 101 32 111 117 116 32 111 102 32 114 97 110 103 101 1 0 6 110 111 116 105 102 121 1 0 9 110 111 116 105 102 121 65 108 108 1 0 15 114 101 103 105 115 116 101 114 78 97 116 105 118 101 115 1 0 25 116 105 109 101 111 117 116 32 118 97 108 117 101 32 105 115 32 110 101 103 97 116 105 118 101 1 0 11 116 111 72 101 120 83 116 114 105 110 103 1 0 8 116 111 83 116 114 105 110 103 1 0 4 119 97 105 116 7 0 28 7 0 29 7 0 30 7 0 31 7 0 32 7 0 33 7 0 34 7 0 35 1 0 19 40 41 76 106 97 118 97 47 108 97 110 103 47 67 108 97 115 115 59 1 0 22 40 41 76 106 97 118 97 47 108 97 110 103 47 67 108 97 115 115 60 42 62 59 1 0 45 40 76 106 97 118 97 47 108 97 110 103 47 83 116 114 105 110 103 59 41 76 106 97 118 97 47 108 97 110 103 47 83 116 114 105 110 103 66 117 105 108 100 101 114 59 12 0 27 0 5 12 0 15 0 8 12 0 39 0 8 12 0 43 0 10 12 0 25 0 52 12 0 26 0 7 12 0 42 0 7 12 0 41 0</span><br><span class="line">9 12 0 15 0 13 12 0 21 0 54 10 0 44 0 60 10 0 46 0 63 10 0 47 0 62 10 0 49 0 55 10 0 49 0 57 10 0 49 0 58 10 0 49 0 59 10 0 50 0 56 10 0 50 0 61 10 0 50 0 64 0 33 0 49 0 0 0 0 0 0 0 14 0 1 0 15 0 8 0 1 0 17 0 0 0 13 0 0 0 1 0 0 0 1 177 0 0 0 0 1 10 0 39 0 8 0 0 1 17 0 25 0 52 0 1 0 19 0 0 0 2 0 53 1 1 0 27 0 5 0 0 0 1 0 23 0 12 0 1 0 17 0 0 0 34 0 2 0 2 0 0 0 11 42 43 166 0 7 4 167 0 4 3 172 0 0 0 1 0 20 0 0 0 5</span><br><span class="line">0 2 9 64 1 1 4 0 22 0 6 0 1 0 18 0 0 0 4 0 1 0 45 0 1 0 42 0 7 0 1 0 17 0 0 0 48 0 2 0 1 0 0 0 36 187 0 50 89 183 0 72 42 182 0 71 182 0 65 182 0 74 18 2 182 0 74 42 182 0 68 184 0 67 182 0 74 182 0 73 176 0</span><br><span class="line">0 0 0 1 17 0 37 0 8 0 0 1 17 0 38 0 8 0 0 1 17 0 43 0 10 0 1 0 18 0 0 0 4 0 1 0 48 0 17 0 43 0 11 0 2 0 17 0 0 0 74 0 4 0 4 0 0 0 50 31 9 148 156 0 13 187 0 46 89 18 4 183 0 66 191 29 155 0 9 29 18 1 164 0 13 187 0 46 89 18 3 183 0 66 191 29 158 0 7 31 10 97 64 42 31 182 0 70 177 0 0 0 1 0 20 0 0 0 6 0 4 16 9 9 7 0 18 0 0 0 4 0 1 0 48 0 17 0 43 0 8 0 2 0 17 0 0 0 18 0 3 0 1 0 0 0 6 42 9 182 0 70 177 0 0 0 0 0 18</span><br><span class="line">0 0 0 4 0 1 0 48 0 4 0 24 0 8 0 2 0 17 0 0 0 13 0 0 0 1 0 0 0 1 177 0 0 0 0 0 18 0 0 0 4 0 1 0 51 0 8 0 14 0 8 0 1 0 17 0 0 0 16 0 0 0 0 0 0 0 4 184 0 69 177 0 0 0 0 0 0]</span><br></pre></td></tr></tbody></table></figure>
+</li>
+</ol>
+</body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/JVM/">#JVM</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Java/">#Java</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Go/">#Go</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2019/09/13/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%86%99Java%E8%99%9A%E6%8B%9F%E6%9C%BA-%E7%AC%94%E8%AE%B03/">自己动手写Java虚拟机 笔记3</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2019/09/09/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%86%99Java%E8%99%9A%E6%8B%9F%E6%9C%BA-%E7%AC%94%E8%AE%B01/">自己动手写Java虚拟机 笔记1</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+<div class="sharebox">
+    
+<div class="addthis_inline_share_toolbox"></div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5d71c42eb9261743"></script>
+
+</div>
+
+
+
+<div class="comments">
+    <h3 class="title is-4">评论</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://example.com/2019/09/10/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%86%99Java%E8%99%9A%E6%8B%9F%E6%9C%BA-%E7%AC%94%E8%AE%B02/';
+        this.page.identifier = '2019/09/10/自己动手写Java虚拟机-笔记2/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'xzenge' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2020 Xiang Shi&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/nadia-repository">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+    <style>
+        .hljs {
+            position: relative;
+        }
+
+        .hljs .clipboard-btn {
+            float: right;
+            color: #9a9a9a;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hljs .clipboard-btn:hover {
+          color: #8a8a8a;
+        }
+
+        .hljs > .clipboard-btn {
+            display: none;
+            position: absolute;
+            right: 4px;
+            top: 4px;
+        }
+
+        .hljs:hover > .clipboard-btn {
+            display: inline;
+        }
+
+        .hljs > figcaption > .clipboard-btn {
+            margin-right: 4px;
+        }
+    </style>
+    <script>
+      $(document).ready(function () {
+        $('figure.hljs').each(function(i, figure) {
+          var codeId = 'code-' + i;
+          var code = figure.querySelector('.code');
+          var copyButton = $('<button>Copy <i class="far fa-clipboard"></i></button>');
+          code.id = codeId;
+          copyButton.addClass('clipboard-btn');
+          copyButton.attr('data-clipboard-target-id', codeId);
+
+          var figcaption = figure.querySelector('figcaption');
+
+          if (figcaption) {
+            figcaption.append(copyButton[0]);
+          } else {
+            figure.prepend(copyButton[0]);
+          }
+        })
+
+        var clipboard = new ClipboardJS('.clipboard-btn', {
+          target: function(trigger) {
+            return document.getElementById(trigger.getAttribute('data-clipboard-target-id'));
+          }
+        });
+        clipboard.on('success', function(e) {
+          e.clearSelection();
+        })
+      })
+    </script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="站内搜索" />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>

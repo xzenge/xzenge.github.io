@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+<head>
+    <meta charset="utf-8">
+<title>自己动手写Java虚拟机 笔记3 - Hexo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.css">
+
+
+
+
+
+
+
+
+    <meta name="description" content="&amp;#x7B2C;&amp;#x4E09;&amp;#x7BC7;&amp;#x4E3B;&amp;#x8981;&amp;#x5B66;&amp;#x4E60;JVM&amp;#x4E2D;class&amp;#x6587;&amp;#x4EF6;&amp;#x7684;&amp;#x5177;&amp;#x4F53;&amp;#x7ED3;&amp;#x6784;&amp;#xFF0C;&amp;#x548C;JVM&amp;#x662F;&amp;#x5982;&amp;#x4F55;&amp;#x89E3;&amp;#x6790;&amp;#x8FD9;&amp;#x4E">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自己动手写Java虚拟机 笔记3">
+<meta property="og:url" content="http://example.com/2019/09/13/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%86%99Java%E8%99%9A%E6%8B%9F%E6%9C%BA-%E7%AC%94%E8%AE%B03/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="&amp;#x7B2C;&amp;#x4E09;&amp;#x7BC7;&amp;#x4E3B;&amp;#x8981;&amp;#x5B66;&amp;#x4E60;JVM&amp;#x4E2D;class&amp;#x6587;&amp;#x4EF6;&amp;#x7684;&amp;#x5177;&amp;#x4F53;&amp;#x7ED3;&amp;#x6784;&amp;#xFF0C;&amp;#x548C;JVM&amp;#x662F;&amp;#x5982;&amp;#x4F55;&amp;#x89E3;&amp;#x6790;&amp;#x8FD9;&amp;#x4E">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-09-13T10:44:38.000Z">
+<meta property="article:modified_time" content="2020-12-14T09:51:24.056Z">
+<meta property="article:author" content="Xiang Shi">
+<meta property="article:tag" content="JVM">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Go">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+<link rel="icon" href="/favicon.png">
+
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ovo|Source+Code+Pro">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/css/justifiedGallery.min.css">
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script defer src="//use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147240985-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-147240985-1');
+</script>
+
+
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+    
+<nav class="navbar is-transparent is-fixed-top navbar-main" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item navbar-logo" href="/">
+                
+                <img src="/images/logo.png" alt="" height="28">
+                
+            </a>
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu navbar-start">
+            
+            <a class="navbar-item "
+               href="/archives">Archives</a>
+            
+            <a class="navbar-item "
+               href="/categories">Categories</a>
+            
+            <a class="navbar-item "
+               href="/tags">Tag</a>
+            
+            <a class="navbar-item "
+               href="/about">About</a>
+            
+        </div>
+        
+        <div class="navbar-menu navbar-end">
+            
+            <a class="navbar-item search" title="搜索" href="javascript:;">
+                <i class="fas fa-search"></i>
+            </a>
+            
+            
+            
+            <a class="navbar-item" title="GitHub" target="_blank" rel="noopener" href="https://github.com/nadia-repository">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+               
+            
+        </div>
+    </div>
+</nav>
+
+    <section class="section">
+    <div class="container">
+    <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
+            自己动手写Java虚拟机 笔记3
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2019-09-13T10:44:38.000Z" itemprop="datePublished">9月 13 2019</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Technology/">Technology</a>
+        </span>
+        
+        
+        <span class="column is-narrow">
+            
+            
+            9 分钟 读完 (约 1355 字)
+        </span>
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>&#x7B2C;&#x4E09;&#x7BC7;&#x4E3B;&#x8981;&#x5B66;&#x4E60;JVM&#x4E2D;class&#x6587;&#x4EF6;&#x7684;&#x5177;&#x4F53;&#x7ED3;&#x6784;&#xFF0C;&#x548C;JVM&#x662F;&#x5982;&#x4F55;&#x89E3;&#x6790;&#x8FD9;&#x4E9B;&#x7ED3;&#x6784;&#x7684;&#x3002;<br>&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;javac&#x5DE5;&#x5177;&#x5C06;&#x4E00;&#x4E2A;java&#x6587;&#x4EF6;compile&#x6210;&#x4E00;&#x4E2A;.class&#x6587;&#x4EF6;&#xFF0C;&#x5E76;&#x901A;&#x8FC7;&#x6211;&#x4EEC;&#x81EA;&#x5DF1;&#x5199;&#x7684;jvm&#x5C06;&#x8BE5;&#x6587;&#x4EF6;&#x89E3;&#x6790;&#x5E76;&#x6253;&#x5370;&#x51FA;&#x6765;&#x3002;&#x901A;&#x8FC7;class&#x6587;&#x4EF6;&#x7684;&#x5B66;&#x4E60;&#x80FD;&#x8BA9;&#x6211;&#x4EEC;&#x66F4;&#x52A0;&#x6DF1;&#x523B;&#x7684;&#x7406;&#x89E3;java&#x662F;&#x600E;&#x6837;&#x5B9E;&#x73B0;&#x8DE8;&#x5E73;&#x53F0;&#xFF0C;&#x5E76;&#x4E14;&#x6211;&#x4EEC;&#x7F16;&#x5199;&#x7684;java&#x4EE3;&#x7801;&#x53C8;&#x662F;&#x5982;&#x4F55;&#x5728;JVM&#x4E2D;&#x4F53;&#x73B0;&#x7684;&#x3002;</p>
+<a id="more"></a>
+
+<h3 id="JVM&#x4E2D;class&#x6587;&#x4EF6;&#x7ED3;&#x6784;-ClassFile"><a href="#JVM&#x4E2D;class&#x6587;&#x4EF6;&#x7ED3;&#x6784;-ClassFile" class="headerlink" title="JVM&#x4E2D;class&#x6587;&#x4EF6;&#x7ED3;&#x6784;(ClassFile)"></a>JVM&#x4E2D;class&#x6587;&#x4EF6;&#x7ED3;&#x6784;(ClassFile)</h3><table>
+<thead>
+<tr>
+<th>Length</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>u4</td>
+<td>magic</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>minor_version</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>major_version</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>constant_pool_count</td>
+</tr>
+<tr>
+<td>cp_info</td>
+<td>constant_pool[constant_pool_count-1]</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>access_flags</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>this_class</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>super_class</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>interfaces_count</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>interfaces[interfaces_count]</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>fields_count</td>
+</tr>
+<tr>
+<td>field_info</td>
+<td>fields[fields_count]</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>methods_count</td>
+</tr>
+<tr>
+<td>method_info</td>
+<td>methods[methods_count]</td>
+</tr>
+</tbody></table>
+<h3 id="JVM&#x4E2D;&#x5B57;&#x6BB5;&#x7ED3;&#x6784;-field-info"><a href="#JVM&#x4E2D;&#x5B57;&#x6BB5;&#x7ED3;&#x6784;-field-info" class="headerlink" title="JVM&#x4E2D;&#x5B57;&#x6BB5;&#x7ED3;&#x6784;(field_info)"></a>JVM&#x4E2D;&#x5B57;&#x6BB5;&#x7ED3;&#x6784;(field_info)</h3><table>
+<thead>
+<tr>
+<th>Length</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>u2</td>
+<td>access_flags</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>name_index</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>descriptor_index</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>attributes_count</td>
+</tr>
+<tr>
+<td>attribute_info</td>
+<td>attributes[attributes_count]</td>
+</tr>
+</tbody></table>
+<h3 id="JVM&#x4E2D;&#x8BBF;&#x95EE;&#x63A7;&#x5236;&#x7B26;&#x7ED3;&#x6784;-access-flags"><a href="#JVM&#x4E2D;&#x8BBF;&#x95EE;&#x63A7;&#x5236;&#x7B26;&#x7ED3;&#x6784;-access-flags" class="headerlink" title="JVM&#x4E2D;&#x8BBF;&#x95EE;&#x63A7;&#x5236;&#x7B26;&#x7ED3;&#x6784;(access_flags)"></a>JVM&#x4E2D;&#x8BBF;&#x95EE;&#x63A7;&#x5236;&#x7B26;&#x7ED3;&#x6784;(access_flags)</h3><table>
+<thead>
+<tr>
+<th>&#x6807;&#x5FD7;&#x540D;</th>
+<th>&#x6807;&#x5FD7;&#x503C;</th>
+<th>&#x6807;&#x5FD7;&#x542B;&#x4E49;</th>
+<th>&#x9488;&#x5BF9;&#x7684;&#x5BF9;&#x8C61;</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ACC_PUBLIC</td>
+<td>0x0001</td>
+<td>public&#x7C7B;&#x578B;</td>
+<td>&#x6240;&#x6709;&#x7C7B;&#x578B;</td>
+</tr>
+<tr>
+<td>ACC_FINAL</td>
+<td>0x0010</td>
+<td>final&#x7C7B;&#x578B;</td>
+<td>&#x7C7B;</td>
+</tr>
+<tr>
+<td>ACC_SUPER</td>
+<td>0x0020</td>
+<td>&#x4F7F;&#x7528;&#x65B0;&#x7684;invokespecial&#x8BED;&#x4E49;</td>
+<td>&#x7C7B;&#x548C;&#x63A5;&#x53E3;</td>
+</tr>
+<tr>
+<td>ACC_INTERFACE</td>
+<td>0x0200</td>
+<td>&#x63A5;&#x53E3;&#x7C7B;&#x578B;</td>
+<td>&#x63A5;&#x53E3;</td>
+</tr>
+<tr>
+<td>ACC_ABSTRACT</td>
+<td>0x0400</td>
+<td>&#x62BD;&#x8C61;&#x7C7B;&#x578B;</td>
+<td>&#x7C7B;&#x548C;&#x63A5;&#x53E3;</td>
+</tr>
+<tr>
+<td>ACC_SYNTHETIC</td>
+<td>0x1000</td>
+<td>&#x8BE5;&#x7C7B;&#x4E0D;&#x7531;&#x7528;&#x6237;&#x4EE3;&#x7801;&#x751F;&#x6210;</td>
+<td>&#x6240;&#x6709;&#x7C7B;&#x578B;</td>
+</tr>
+<tr>
+<td>ACC_ANNOTATION</td>
+<td>0x2000</td>
+<td>&#x6CE8;&#x89E3;&#x7C7B;&#x578B;</td>
+<td>&#x6CE8;&#x89E3;</td>
+</tr>
+<tr>
+<td>ACC_ENUM</td>
+<td>0x4000</td>
+<td>&#x679A;&#x4E3E;&#x7C7B;&#x578B;</td>
+<td>&#x679A;&#x4E3E;</td>
+</tr>
+</tbody></table>
+<h3 id="&#x5B9E;&#x73B0;"><a href="#&#x5B9E;&#x73B0;" class="headerlink" title="&#x5B9E;&#x73B0;"></a>&#x5B9E;&#x73B0;</h3><ol>
+<li>&#x5B9A;&#x4E49;Class&#x6587;&#x4EF6;&#x7684;&#x5F55;&#x53D6;&#x7C7B;(ClassReader)</li>
+</ol>
+<figure class="highlight golang hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">type</span> ClassReader <span class="hljs-keyword">struct</span> {</span><br><span class="line">	data []<span class="hljs-keyword">byte</span> <span class="hljs-comment">//class&#x6587;&#x4EF6;&#x5B57;&#x8282;&#x6D41;</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// &#x8BFB;&#x53D6;u1</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassReader)</span> <span class="hljs-title">readUint8</span><span class="hljs-params">()</span> <span class="hljs-title">uint8</span></span> {</span><br><span class="line">	val := self.data[<span class="hljs-number">0</span>] <span class="hljs-comment">//&#x8BFB;&#x53D6;1Byte</span></span><br><span class="line">	self.data = self.data[<span class="hljs-number">1</span>:]</span><br><span class="line">	<span class="hljs-keyword">return</span> val</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// u2</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassReader)</span> <span class="hljs-title">readUint16</span><span class="hljs-params">()</span> <span class="hljs-title">uint16</span></span> {</span><br><span class="line">	val := binary.BigEndian.Uint16(self.data) <span class="hljs-comment">//&#x8BFB;&#x53D6;2Byte&#x5E76;&#x8F6C;&#x4E3A;uint16</span></span><br><span class="line">	self.data = self.data[<span class="hljs-number">2</span>:]</span><br><span class="line">	<span class="hljs-keyword">return</span> val</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// u4</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassReader)</span> <span class="hljs-title">readUint32</span><span class="hljs-params">()</span> <span class="hljs-title">uint32</span></span> {</span><br><span class="line">	val := binary.BigEndian.Uint32(self.data) <span class="hljs-comment">//&#x8BFB;&#x53D6;4Byte&#x5E76;&#x8F6C;&#x4E3A;uint32</span></span><br><span class="line">	self.data = self.data[<span class="hljs-number">4</span>:]</span><br><span class="line">	<span class="hljs-keyword">return</span> val</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassReader)</span> <span class="hljs-title">readUint64</span><span class="hljs-params">()</span> <span class="hljs-title">uint64</span></span> {</span><br><span class="line">	val := binary.BigEndian.Uint64(self.data) <span class="hljs-comment">//&#x8BFB;&#x53D6;8Byte&#x5E76;&#x8F6C;&#x4E3A;uint64</span></span><br><span class="line">	self.data = self.data[<span class="hljs-number">8</span>:]</span><br><span class="line">	<span class="hljs-keyword">return</span> val</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassReader)</span> <span class="hljs-title">readUint16s</span><span class="hljs-params">()</span> []<span class="hljs-title">uint16</span></span> {</span><br><span class="line">	n := self.readUint16() <span class="hljs-comment">//&#x8BFB;&#x53D6;2Byte&#xFF0C;&#x8BE5;&#x503C;&#x4E3A;&#x540E;&#x7EED;&#x6570;&#x7EC4;&#x7684;&#x957F;&#x5EA6;</span></span><br><span class="line">	s := <span class="hljs-built_in">make</span>([]<span class="hljs-keyword">uint16</span>, n) <span class="hljs-comment">//&#x751F;&#x4EA7;&#x957F;&#x5EA6;&#x4E3A;n&#x7684;uint16&#x7C7B;&#x578B;&#x6570;&#x7EC4;</span></span><br><span class="line">	<span class="hljs-keyword">for</span> i := <span class="hljs-keyword">range</span> s {</span><br><span class="line">		s[i] = self.readUint16() <span class="hljs-comment">//&#x8BFB;&#x53D6;class&#x6587;&#x4EF6;&#xFF0C;&#x6BCF;&#x8BFB;&#x53D6;2Byte&#x4FBF;&#x653E;&#x5165;&#x6570;&#x7EC4;</span></span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">return</span> s</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassReader)</span> <span class="hljs-title">readBytes</span><span class="hljs-params">(n <span class="hljs-keyword">uint32</span>)</span> []<span class="hljs-title">byte</span></span> {</span><br><span class="line">	bytes := self.data[:n] <span class="hljs-comment">//&#x8BFB;&#x53D6;&#x957F;&#x5EA6;&#x4E3A;n&#x7684;&#x5B57;&#x8282;</span></span><br><span class="line">	self.data = self.data[n:]</span><br><span class="line">	<span class="hljs-keyword">return</span> bytes</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<ol>
+<li>&#x5B9A;&#x4E49;Class&#x6587;&#x4EF6;&#x7684;&#x683C;&#x5F0F;(ClassFile)</li>
+</ol>
+<figure class="highlight golang hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">type</span> ClassFile <span class="hljs-keyword">struct</span> { <span class="hljs-comment">//&#x6309;&#x7167;jvm&#x89C4;&#x8303;&#xFF0C;&#x5B9A;&#x4E49;class&#x6587;&#x4EF6;&#x7ED3;&#x6784;</span></span><br><span class="line">	<span class="hljs-comment">//magic      uint32</span></span><br><span class="line">	minorVersion <span class="hljs-keyword">uint16</span></span><br><span class="line">	majorVersion <span class="hljs-keyword">uint16</span></span><br><span class="line">	constantPool ConstantPool</span><br><span class="line">	accessFlags  <span class="hljs-keyword">uint16</span></span><br><span class="line">	thisClass    <span class="hljs-keyword">uint16</span></span><br><span class="line">	superClass   <span class="hljs-keyword">uint16</span></span><br><span class="line">	interfaces   []<span class="hljs-keyword">uint16</span></span><br><span class="line">	fields       []*MemberInfo</span><br><span class="line">	methods      []*MemberInfo</span><br><span class="line">	attributes   []AttributeInfo</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">//&#x6587;&#x4EF6;&#x89E3;&#x6790;&#x5165;&#x53E3;&#x65B9;&#x6CD5;&#xFF0C;&#x5165;&#x53C2;class&#x6587;&#x4EF6;&#x6D41;&#xFF0C;&#x8FD4;&#x56DE;class&#x6587;&#x4EF6;&#x5BF9;&#x8C61;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Parse</span><span class="hljs-params">(classData []<span class="hljs-keyword">byte</span>)</span> <span class="hljs-params">(cf *ClassFile, err error)</span></span> {</span><br><span class="line">	<span class="hljs-keyword">defer</span> <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">()</span></span> { <span class="hljs-comment">//&#x6355;&#x83B7;&#x5F02;&#x5E38;</span></span><br><span class="line">		<span class="hljs-keyword">if</span> r := <span class="hljs-built_in">recover</span>(); r != <span class="hljs-literal">nil</span> {</span><br><span class="line">			<span class="hljs-keyword">var</span> ok <span class="hljs-keyword">bool</span></span><br><span class="line">			err, ok = r.(error)</span><br><span class="line">			<span class="hljs-keyword">if</span> !ok {</span><br><span class="line">				err = fmt.Errorf(<span class="hljs-string">&quot;%v&quot;</span>, r)</span><br><span class="line">			}</span><br><span class="line">		}</span><br><span class="line">	}()</span><br><span class="line"></span><br><span class="line">	cr := &amp;ClassReader{classData} <span class="hljs-comment">//&#x5B9E;&#x4F8B;&#x5316;classReader&#x7C7B;</span></span><br><span class="line">	cf = &amp;ClassFile{} <span class="hljs-comment">//&#x5B9E;&#x4F8B;&#x5316;ClassFile&#x7C7B;</span></span><br><span class="line">	cf.read(cr) <span class="hljs-comment">//&#x8BFB;&#x53D6;class&#x6587;&#x4EF6;</span></span><br><span class="line">	<span class="hljs-keyword">return</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">//&#x8BFB;&#x53D6;class&#x6587;&#x4EF6;&#x7684;&#x5177;&#x4F53;&#x65B9;&#x6CD5;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassFile)</span> <span class="hljs-title">read</span><span class="hljs-params">(reader *ClassReader)</span></span> {</span><br><span class="line">	self.readAndCheckMagic(reader) <span class="hljs-comment">//&#x8BFB;&#x53D6;&#x9B54;&#x6570;</span></span><br><span class="line">	self.readAndCheckVersion(reader) <span class="hljs-comment">//&#x8BFB;&#x53D6;&#x4E3B;&#x6B21;&#x7248;&#x672C;&#x53F7;</span></span><br><span class="line">	self.constantPool = readConstantPool(reader) <span class="hljs-comment">//&#x8BFB;&#x53D6;&#x5E38;&#x91CF;&#x6C60;</span></span><br><span class="line">	self.accessFlags = reader.readUint16() <span class="hljs-comment">//&#x8BFB;&#x53D6;&#x5F53;&#x524D;&#x7C7B;&#xFF08;&#x6216;&#x8005;&#x63A5;&#x53E3;&#xFF09;&#x7684;&#x8BBF;&#x95EE;&#x4FEE;&#x9970;&#x7B26;</span></span><br><span class="line">	self.thisClass = reader.readUint16() <span class="hljs-comment">//&#x8BFB;&#x53D6;&#x5F53;&#x524D;&#x7C7B;&#x7D22;&#x5F15;</span></span><br><span class="line">	self.superClass = reader.readUint16() <span class="hljs-comment">//&#x8BFB;&#x53D6;&#x7236;&#x7C7B;&#x7D22;&#x5F15;</span></span><br><span class="line">	self.interfaces = reader.readUint16s() <span class="hljs-comment">//&#x8BFB;&#x53D6;&#x6240;&#x6709;&#x63A5;&#x53E3;&#x7D22;&#x5F15;</span></span><br><span class="line">	self.fields = readMembers(reader, self.constantPool) <span class="hljs-comment">//&#x4ECE;&#x5E38;&#x91CF;&#x6C60;&#x4E2D;&#x8BFB;&#x53D6;&#x6240;&#x6709;&#x6210;&#x5458;</span></span><br><span class="line">	self.methods = readMembers(reader, self.constantPool) <span class="hljs-comment">//&#x4ECE;&#x5E38;&#x91CF;&#x6C60;&#x4E2D;&#x8BFB;&#x53D6;&#x6240;&#x6709;&#x65B9;&#x6CD5;</span></span><br><span class="line">	self.attributes = readAttributes(reader, self.constantPool) <span class="hljs-comment">//&#x4ECE;&#x5E38;&#x91CF;&#x6C60;&#x4E2D;&#x8BFB;&#x53D6;&#x6240;&#x6709;&#x5C5E;&#x6027;</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassFile)</span> <span class="hljs-title">readAndCheckMagic</span><span class="hljs-params">(reader *ClassReader)</span></span> {</span><br><span class="line">	magic := reader.readUint32() <span class="hljs-comment">//&#x8BFB;&#x53D6;4Byte&#x9B54;&#x6570;</span></span><br><span class="line">	<span class="hljs-keyword">if</span> magic != <span class="hljs-number">0xCAFEBABE</span> { <span class="hljs-comment">//&#x5224;&#x65AD;&#x9B54;&#x6570;&#x662F;&#x5426;&#x4E3A;0xCAFEBABE</span></span><br><span class="line">		<span class="hljs-built_in">panic</span>(<span class="hljs-string">&quot;java.lang.ClassFormatError: magic!&quot;</span>)</span><br><span class="line">	}</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassFile)</span> <span class="hljs-title">readAndCheckVersion</span><span class="hljs-params">(reader *ClassReader)</span></span> {</span><br><span class="line">	self.minorVersion = reader.readUint16() <span class="hljs-comment">//&#x9AD8;2Byte&#x4E3A;&#x6B21;&#x7248;&#x672C;&#x53F7;</span></span><br><span class="line">	self.majorVersion = reader.readUint16() <span class="hljs-comment">//&#x4F4E;2Byte&#x4E3A;&#x4E3B;&#x7248;&#x672C;&#x53F7;</span></span><br><span class="line">	<span class="hljs-keyword">switch</span> self.majorVersion { <span class="hljs-comment">//&#x68C0;&#x67E5;&#x7248;&#x672C;&#x53F7;&#x662F;&#x5426;&#x4E3A;45~52</span></span><br><span class="line">	<span class="hljs-keyword">case</span> <span class="hljs-number">45</span>:</span><br><span class="line">		<span class="hljs-keyword">return</span></span><br><span class="line">	<span class="hljs-keyword">case</span> <span class="hljs-number">46</span>, <span class="hljs-number">47</span>, <span class="hljs-number">48</span>, <span class="hljs-number">49</span>, <span class="hljs-number">50</span>, <span class="hljs-number">51</span>, <span class="hljs-number">52</span>:</span><br><span class="line">		<span class="hljs-keyword">if</span> self.minorVersion == <span class="hljs-number">0</span> {</span><br><span class="line">			<span class="hljs-keyword">return</span></span><br><span class="line">		}</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">	<span class="hljs-built_in">panic</span>(<span class="hljs-string">&quot;java.lang.UnsupportedClassVersionError!&quot;</span>)</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">//&#x5BF9;&#x5916;&#x66B4;&#x9732;get&#x65B9;&#x6CD5;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassFile)</span> <span class="hljs-title">MinorVersion</span><span class="hljs-params">()</span> <span class="hljs-title">uint16</span></span> {</span><br><span class="line">	<span class="hljs-keyword">return</span> self.minorVersion</span><br><span class="line">}</span><br><span class="line"><span class="hljs-comment">//&#x5BF9;&#x5916;&#x66B4;&#x9732;get&#x65B9;&#x6CD5;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassFile)</span> <span class="hljs-title">MajorVersion</span><span class="hljs-params">()</span> <span class="hljs-title">uint16</span></span> {</span><br><span class="line">	<span class="hljs-keyword">return</span> self.majorVersion</span><br><span class="line">}</span><br><span class="line"><span class="hljs-comment">//&#x5BF9;&#x5916;&#x66B4;&#x9732;get&#x65B9;&#x6CD5;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassFile)</span> <span class="hljs-title">ConstantPool</span><span class="hljs-params">()</span> <span class="hljs-title">ConstantPool</span></span> {</span><br><span class="line">	<span class="hljs-keyword">return</span> self.constantPool</span><br><span class="line">}</span><br><span class="line"><span class="hljs-comment">//&#x5BF9;&#x5916;&#x66B4;&#x9732;get&#x65B9;&#x6CD5;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassFile)</span> <span class="hljs-title">AccessFlags</span><span class="hljs-params">()</span> <span class="hljs-title">uint16</span></span> {</span><br><span class="line">	<span class="hljs-keyword">return</span> self.accessFlags</span><br><span class="line">}</span><br><span class="line"><span class="hljs-comment">//&#x5BF9;&#x5916;&#x66B4;&#x9732;get&#x65B9;&#x6CD5;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassFile)</span> <span class="hljs-title">Fields</span><span class="hljs-params">()</span> []*<span class="hljs-title">MemberInfo</span></span> {</span><br><span class="line">	<span class="hljs-keyword">return</span> self.fields</span><br><span class="line">}</span><br><span class="line"><span class="hljs-comment">//&#x5BF9;&#x5916;&#x66B4;&#x9732;get&#x65B9;&#x6CD5;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassFile)</span> <span class="hljs-title">Methods</span><span class="hljs-params">()</span> []*<span class="hljs-title">MemberInfo</span></span> {</span><br><span class="line">	<span class="hljs-keyword">return</span> self.methods</span><br><span class="line">}</span><br><span class="line"><span class="hljs-comment">//&#x5BF9;&#x5916;&#x66B4;&#x9732;get&#x65B9;&#x6CD5;&#xFF0C;&#x6839;&#x636E;thisClass&#x7D22;&#x5F15;&#x5728;&#x5E38;&#x91CF;&#x6C60;&#x4E2D;&#x67E5;&#x627E;&#x540D;&#x79F0;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassFile)</span> <span class="hljs-title">ClassName</span><span class="hljs-params">()</span> <span class="hljs-title">string</span></span> {</span><br><span class="line">	<span class="hljs-keyword">return</span> self.constantPool.getClassName(self.thisClass)</span><br><span class="line">}</span><br><span class="line"><span class="hljs-comment">//&#x5BF9;&#x5916;&#x66B4;&#x9732;get&#x65B9;&#x6CD5;&#xFF0C;&#x6839;&#x636E;superClass&#x7D22;&#x5F15;&#x5728;&#x5E38;&#x91CF;&#x6C60;&#x4E2D;&#x67E5;&#x627E;&#x540D;&#x79F0;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassFile)</span> <span class="hljs-title">SuperClassName</span><span class="hljs-params">()</span> <span class="hljs-title">string</span></span> {</span><br><span class="line">	<span class="hljs-keyword">if</span> self.superClass &gt; <span class="hljs-number">0</span> {</span><br><span class="line">		<span class="hljs-keyword">return</span> self.constantPool.getClassName(self.superClass)</span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span></span><br><span class="line">}</span><br><span class="line"><span class="hljs-comment">//&#x5BF9;&#x5916;&#x66B4;&#x9732;get&#x65B9;&#x6CD5;&#xFF0C;&#x6839;&#x636E;interfaces&#x7D22;&#x5F15;&#x5728;&#x5E38;&#x91CF;&#x6C60;&#x4E2D;&#x67E5;&#x627E;&#x540D;&#x79F0;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *ClassFile)</span> <span class="hljs-title">InterfaceNames</span><span class="hljs-params">()</span> []<span class="hljs-title">string</span></span> {</span><br><span class="line">	interfaceNames := <span class="hljs-built_in">make</span>([]<span class="hljs-keyword">string</span>, <span class="hljs-built_in">len</span>(self.interfaces))</span><br><span class="line">	<span class="hljs-keyword">for</span> i, cpIndex := <span class="hljs-keyword">range</span> self.interfaces {</span><br><span class="line">		interfaceNames[i] = self.constantPool.getClassName(cpIndex)</span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">return</span> interfaceNames</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<ol>
+<li>&#x5B9A;&#x4E49;&#x5B57;&#x6BB5;&#x548C;&#x65B9;&#x6CD5;&#x7684;&#x7ED3;&#x6784;(field_info&#x3001;method_info)</li>
+</ol>
+<figure class="highlight golang hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">type</span> MemberInfo <span class="hljs-keyword">struct</span> { <span class="hljs-comment">//field&#x548C;method&#x7684;&#x7ED3;&#x6784;&#x7C7B;&#x578B;&#xFF0C;&#x4F7F;&#x7528;&#x540C;&#x4E00;&#x4E2A;&#x7ED3;&#x6784;</span></span><br><span class="line">	cp              ConstantPool <span class="hljs-comment">//&#x5F53;&#x524D;&#x5E38;&#x91CF;&#x6C60;</span></span><br><span class="line">	accessFlags     <span class="hljs-keyword">uint16</span> <span class="hljs-comment">//&#x8BBF;&#x95EE;&#x6807;&#x5FD7;</span></span><br><span class="line">	nameIndex       <span class="hljs-keyword">uint16</span> <span class="hljs-comment">//&#x540D;&#x79F0;&#x7D22;&#x5F15;</span></span><br><span class="line">	descriptorIndex <span class="hljs-keyword">uint16</span> <span class="hljs-comment">//&#x63CF;&#x8FF0;&#x7D22;&#x5F15;</span></span><br><span class="line">	attributes      []AttributeInfo <span class="hljs-comment">//&#x5C5E;&#x6027;&#x5217;&#x8868; </span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// read field or method table</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">readMembers</span><span class="hljs-params">(reader *ClassReader, cp ConstantPool)</span> []*<span class="hljs-title">MemberInfo</span></span> {</span><br><span class="line">	memberCount := reader.readUint16() <span class="hljs-comment">//&#x8BFB;&#x53D6;field&#x6216;method&#x6570;&#x91CF;</span></span><br><span class="line">	members := <span class="hljs-built_in">make</span>([]*MemberInfo, memberCount) <span class="hljs-comment">//&#x521B;&#x5EFA;&#x6570;&#x7EC4;</span></span><br><span class="line">	<span class="hljs-keyword">for</span> i := <span class="hljs-keyword">range</span> members {</span><br><span class="line">		members[i] = readMember(reader, cp)</span><br><span class="line">	}</span><br><span class="line">	<span class="hljs-keyword">return</span> members</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">//&#x5177;&#x4F53;&#x8BFB;&#x53D6;field&#x548C;method&#x7684;&#x65B9;&#x6CD5;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">readMember</span><span class="hljs-params">(reader *ClassReader, cp ConstantPool)</span> *<span class="hljs-title">MemberInfo</span></span> {</span><br><span class="line">	<span class="hljs-keyword">return</span> &amp;MemberInfo{</span><br><span class="line">		cp:              cp,</span><br><span class="line">		accessFlags:     reader.readUint16(), <span class="hljs-comment">//&#x8BFB;&#x53D6;2Byte&#x7684;&#x8BBF;&#x95EE;&#x63A7;&#x5236;&#x7B26;</span></span><br><span class="line">		nameIndex:       reader.readUint16(), <span class="hljs-comment">//&#x8BFB;&#x53D6;2Byte&#x7684;&#x540D;&#x79F0;&#x7D22;&#x5F15;</span></span><br><span class="line">		descriptorIndex: reader.readUint16(), <span class="hljs-comment">//&#x8BFB;&#x53D6;2Byte&#x7684;&#x63CF;&#x8FF0;&#x7D22;&#x5F15;</span></span><br><span class="line">		attributes:      readAttributes(reader, cp), <span class="hljs-comment">//&#x8BFB;&#x53D6;&#x5C5E;&#x6027;&#x5217;&#x8868;</span></span><br><span class="line">	}</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">//&#x5BF9;&#x5916;&#x66B4;&#x9732;get&#x65B9;&#x6CD5;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *MemberInfo)</span> <span class="hljs-title">AccessFlags</span><span class="hljs-params">()</span> <span class="hljs-title">uint16</span></span> {</span><br><span class="line">	<span class="hljs-keyword">return</span> self.accessFlags</span><br><span class="line">}</span><br><span class="line"><span class="hljs-comment">//&#x5BF9;&#x5916;&#x66B4;&#x9732;get&#x65B9;&#x6CD5;&#xFF0C;&#x901A;&#x8FC7;&#x540D;&#x79F0;&#x7D22;&#x5F15;&#x8BBF;&#x95EE;&#x5E38;&#x91CF;&#x6C60;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *MemberInfo)</span> <span class="hljs-title">Name</span><span class="hljs-params">()</span> <span class="hljs-title">string</span></span> {</span><br><span class="line">	<span class="hljs-keyword">return</span> self.cp.getUtf8(self.nameIndex)</span><br><span class="line">}</span><br><span class="line"><span class="hljs-comment">//&#x5BF9;&#x5916;&#x66B4;&#x9732;get&#x65B9;&#x6CD5;&#xFF0C;&#x901A;&#x8FC7;&#x63CF;&#x8FF0;&#x7D22;&#x5F15;&#x8BBF;&#x95EE;&#x5E38;&#x91CF;&#x6C60;</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(self *MemberInfo)</span> <span class="hljs-title">Descriptor</span><span class="hljs-params">()</span> <span class="hljs-title">string</span></span> {</span><br><span class="line">	<span class="hljs-keyword">return</span> self.cp.getUtf8(self.descriptorIndex)</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure></body></html>
+    
+    </div>
+    
+    <div class="columns is-variable is-1 is-multiline is-mobile">
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/JVM/">#JVM</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Java/">#Java</a></span>
+    
+        <span class="column is-narrow"><a class="tag is-light article-tag" href="/tags/Go/">#Go</a></span>
+    
+    </div>
+    
+    
+    <div class="columns is-mobile is-multiline article-nav">
+        <span class="column is-12-mobile is-half-desktop  article-nav-prev">
+            
+            <a href="/2019/09/24/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%B1%E8%B4%A5%E5%AF%BC%E8%87%B4%E7%9A%84%E7%94%9F%E4%BA%A7%E9%97%AE%E9%A2%98/">记一次序列化失败导致的生产问题</a>
+            
+        </span>
+        <span class="column is-12-mobile is-half-desktop  article-nav-next">
+            
+            <a href="/2019/09/10/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%86%99Java%E8%99%9A%E6%8B%9F%E6%9C%BA-%E7%AC%94%E8%AE%B02/">自己动手写Java虚拟机 笔记2</a>
+            
+        </span>
+    </div>
+    
+</article>
+
+
+<div class="sharebox">
+    
+<div class="addthis_inline_share_toolbox"></div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5d71c42eb9261743"></script>
+
+</div>
+
+
+
+<div class="comments">
+    <h3 class="title is-4">评论</h3>
+    
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://example.com/2019/09/13/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E5%86%99Java%E8%99%9A%E6%8B%9F%E6%9C%BA-%E7%AC%94%E8%AE%B03/';
+        this.page.identifier = '2019/09/13/自己动手写Java虚拟机-笔记3/';
+        
+        this.language = 'zh';
+        
+    };
+    (function() {
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'xzenge' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+<div id="disqus_thread">
+    
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+
+    </div>
+</section>
+    <footer class="footer">
+    <div class="container">
+        <div class="columns content">
+            <div class="column is-narrow has-text-centered">
+                &copy; 2020 Xiang Shi&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        target="_blank" rel="noopener" href="http://github.com/ppoffice/hexo-theme-minos">Minos</a>
+            </div>
+            <div class="column is-hidden-mobile"></div>
+
+            
+            <div class="column is-narrow">
+                <div class="columns is-mobile is-multiline is-centered">
+                
+                    
+                <a class="column is-narrow has-text-black" title="GitHub" target="_blank" rel="noopener" href="https://github.com/nadia-repository">
+                    
+                    GitHub
+                    
+                </a>
+                
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</footer>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+<!-- test if the browser is outdated -->
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/outdated-browser/1.1.5/outdatedbrowser.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // plugin function, place inside DOM ready function
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        })
+    });
+</script>
+
+<script>
+    window.FontAwesomeConfig = {
+        searchPseudoElements: true
+    }
+    moment.locale("zh-CN");
+</script>
+
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        "HTML-CSS": {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+</script>
+
+    
+    
+    
+    
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.8/js/lightgallery-all.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.6.5/js/jquery.justifiedGallery.min.js"></script>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            if (typeof($.fn.lightGallery) === 'function') {
+                $('.article.gallery').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof($.fn.justifiedGallery) === 'function') {
+                $('.justified-gallery').justifiedGallery();
+            }
+        });
+    })(jQuery);
+</script>
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+    <style>
+        .hljs {
+            position: relative;
+        }
+
+        .hljs .clipboard-btn {
+            float: right;
+            color: #9a9a9a;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hljs .clipboard-btn:hover {
+          color: #8a8a8a;
+        }
+
+        .hljs > .clipboard-btn {
+            display: none;
+            position: absolute;
+            right: 4px;
+            top: 4px;
+        }
+
+        .hljs:hover > .clipboard-btn {
+            display: inline;
+        }
+
+        .hljs > figcaption > .clipboard-btn {
+            margin-right: 4px;
+        }
+    </style>
+    <script>
+      $(document).ready(function () {
+        $('figure.hljs').each(function(i, figure) {
+          var codeId = 'code-' + i;
+          var code = figure.querySelector('.code');
+          var copyButton = $('<button>Copy <i class="far fa-clipboard"></i></button>');
+          code.id = codeId;
+          copyButton.addClass('clipboard-btn');
+          copyButton.attr('data-clipboard-target-id', codeId);
+
+          var figcaption = figure.querySelector('figcaption');
+
+          if (figcaption) {
+            figcaption.append(copyButton[0]);
+          } else {
+            figure.prepend(copyButton[0]);
+          }
+        })
+
+        var clipboard = new ClipboardJS('.clipboard-btn', {
+          target: function(trigger) {
+            return document.getElementById(trigger.getAttribute('data-clipboard-target-id'));
+          }
+        });
+        clipboard.on('success', function(e) {
+          e.clearSelection();
+        })
+      })
+    </script>
+
+    
+    
+
+    
+
+
+
+<script src="/js/script.js"></script>
+
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-mask"></div>
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="站内搜索" />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+    
+</body>
+</html>
