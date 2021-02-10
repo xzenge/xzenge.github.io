@@ -128,6 +128,61 @@
         <article class="article content gallery" itemscope itemprop="blogPost">
     <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
         
+            <a href="/2020/05/21/%E5%9F%BA%E4%BA%8EFlink%E6%8E%A8%E9%80%81%E6%8A%A5%E8%AD%A6%E4%BF%A1%E6%81%AF-%E6%B5%8B%E8%AF%95/" itemprop="url">基于Flink推送报警信息-测试</a>
+        
+    </h1>
+    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
+        <span class="column is-narrow">
+            
+                <time datetime="2020-05-21T11:41:25.000Z" itemprop="datePublished">5月 21 2020</time>
+            
+        </span>
+        
+        <span class="column is-narrow article-category">
+            <i class="far fa-folder"></i>
+            <a class="article-category-link" href="/categories/Technology/">Technology</a>
+        </span>
+        
+        
+        <span class="column is-narrow">
+            
+            
+            4 分钟 读完 (约 533 字)
+        </span>
+        
+    </div>
+    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
+    
+        <html><head></head><body><p>&#x4E0A;&#x6B21;&#x6211;&#x4EEC;&#x7B80;&#x5355;&#x7684;&#x5B9E;&#x73B0;&#x4E86;&#x5982;&#x4F55;&#x901A;&#x8FC7;Flink&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;wechat&#x63A8;&#x9001;&#x529F;&#x80FD;&#xFF0C;&#x8FD9;&#x6B21;&#x6211;&#x4EEC;&#x5C31;&#x5B9E;&#x9645;&#x7684;&#x8FD0;&#x884C;&#x8D77;&#x6765;&#x770B;&#x770B;&#x3002;&#x4EE5;&#x4E0B;&#x64CD;&#x4F5C;&#x90FD;&#x662F;&#x57FA;&#x4E8E;windows&#x73AF;&#x5883;&#xFF0C;&#x4E3A;&#x907F;&#x514D;&#x73AF;&#x5883;&#x7684;&#x5F71;&#x54CD;&#x5168;&#x90E8;&#x91C7;&#x7528;docker&#x90E8;&#x7F72;&#x3002;</p>
+<h3 id="&#x642D;&#x5EFA;&#x672C;&#x5730;RocketMQ&#x73AF;&#x5883;"><a href="#&#x642D;&#x5EFA;&#x672C;&#x5730;RocketMQ&#x73AF;&#x5883;" class="headerlink" title="&#x642D;&#x5EFA;&#x672C;&#x5730;RocketMQ&#x73AF;&#x5883;"></a>&#x642D;&#x5EFA;&#x672C;&#x5730;RocketMQ&#x73AF;&#x5883;</h3><ol>
+<li><p>&#x62C9;&#x53D6;namesrv &#x548C;broker &#x955C;&#x50CF;</p>
+<ul>
+<li>docker pull rocketmqinc/rocketmq:4.4.0</li>
+</ul>
+</li>
+<li><p>&#x542F;&#x52A8;namesrv</p>
+<ul>
+<li>docker run -d -p 9876:9876 -v D:\work\rocketmq\data\namesrv\logs:/root/logs -v D:\work\rocketmq\data\namesrv\store:/root/store &#x2013;name rmqnamesrv -e &#x201C;MAX_POSSIBLE_HEAP=100000000&#x201D; rocketmqinc/rocketmq:4.4.0 sh mqnamesrv</li>
+</ul>
+</li>
+<li><p>&#x914D;&#x7F6E;broker.config</p>
+<figure class="highlight yml hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">brokerClusterName</span> <span class="hljs-string">=</span> <span class="hljs-string">DefaultCluster</span></span><br><span class="line"><span class="hljs-string">brokerName</span> <span class="hljs-string">=</span> <span class="hljs-string">broker-a</span></span><br><span class="line"><span class="hljs-string">brokerId</span> <span class="hljs-string">=</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-string">deleteWhen</span> <span class="hljs-string">=</span> <span class="hljs-number">04</span></span><br><span class="line"><span class="hljs-string">fileReservedTime</span> <span class="hljs-string">=</span> <span class="hljs-number">48</span></span><br><span class="line"><span class="hljs-string">brokerRole</span> <span class="hljs-string">=</span> <span class="hljs-string">ASYNC_MASTER</span></span><br><span class="line"><span class="hljs-string">flushDiskType</span> <span class="hljs-string">=</span> <span class="hljs-string">ASYNC_FLUSH</span></span><br><span class="line"><span class="hljs-string">brokerIP1</span> <span class="hljs-string">=</span> <span class="hljs-number">192.168</span><span class="hljs-number">.1</span><span class="hljs-number">.2</span></span><br></pre></td></tr></tbody></table></figure></li></ol></body></html>
+        <p class="article-more-link">
+            <a href="/2020/05/21/%E5%9F%BA%E4%BA%8EFlink%E6%8E%A8%E9%80%81%E6%8A%A5%E8%AD%A6%E4%BF%A1%E6%81%AF-%E6%B5%8B%E8%AF%95/#more">阅读更多</a>
+        </p>
+    
+    </div>
+    
+    
+</article>
+
+
+
+
+    
+        <article class="article content gallery" itemscope itemprop="blogPost">
+    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
+        
             <a href="/2020/05/16/%E5%9F%BA%E4%BA%8EFlink%E8%AE%BE%E8%AE%A1%E7%BB%9F%E4%B8%80%E6%8A%A5%E8%AD%A6%E5%B9%B3%E5%8F%B0/" itemprop="url">基于Flink设计统一报警平台</a>
         
     </h1>
@@ -524,52 +579,6 @@
 <h2 id="&#x670D;&#x52A1;&#x62C6;&#x5206;&#x540E;&#x3002;&#x3002;&#x3002;"><a href="#&#x670D;&#x52A1;&#x62C6;&#x5206;&#x540E;&#x3002;&#x3002;&#x3002;" class="headerlink" title="&#x670D;&#x52A1;&#x62C6;&#x5206;&#x540E;&#x3002;&#x3002;&#x3002;"></a>&#x670D;&#x52A1;&#x62C6;&#x5206;&#x540E;&#x3002;&#x3002;&#x3002;</h2><p>&#x5728;&#x4E92;&#x8054;&#x7F51;&#x516C;&#x53F8;&#x5DE5;&#x4F5C;&#x7684;&#x8BDD;&#xFF0C;&#x5927;&#x5BB6;&#x5E94;&#x8BE5;&#x90FD;&#x7ECF;&#x5386;&#x8FC7;&#x4E00;&#x4E2A;&#x5927;&#x7CFB;&#x7EDF;&#xFF0C;&#x7ECF;&#x8FC7;&#x4E0D;&#x505C;&#x7684;&#x8FED;&#x4EE3;&#xFF0C;&#x6700;&#x540E;&#x62C6;&#x6210;&#x6570;&#x4E2A;&#x5FAE;&#x670D;&#x52A1;&#x7684;&#x8FC7;&#x7A0B;&#x3002;<br>&#x5176;&#x4E2D;&#x7684;&#x597D;&#x5904;&#x81EA;&#x7136;&#x4E0D;&#x7528;&#x8BF4;&#xFF0C;&#x7CFB;&#x7EDF;&#x89E3;&#x8026;&#x3001;&#x4E1A;&#x52A1;&#x89E3;&#x8026;&#x3001;&#x5FEB;&#x901F;&#x53D1;&#x7248;&#x3001;&#x66F4;&#x5C11;&#x7684;&#x7EF4;&#x62A4;&#x7B49;&#x7B49;&#x7B49;&#x7B49;&#x3002;<br>&#x4F46;&#x662F;&#x4E00;&#x65E6;&#x62C6;&#x51FA;&#x591A;&#x4E2A;&#x5FAE;&#x670D;&#x52A1;&#xFF0C;&#x6211;&#x4EEC;&#x4E5F;&#x4F1A;&#x9047;&#x5230;&#x4E00;&#x4E2A;&#x68D8;&#x624B;&#x95EE;&#x9898;&#x3002;</p></body></html>
         <p class="article-more-link">
             <a href="/2020/03/01/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%95%B4%E7%90%86/#more">阅读更多</a>
-        </p>
-    
-    </div>
-    
-    
-</article>
-
-
-
-
-    
-        <article class="article content gallery" itemscope itemprop="blogPost">
-    <h1 class="article-title is-size-3 is-size-4-mobile" itemprop="name">
-        
-            <a href="/2020/02/22/JVM-%E6%95%B4%E7%90%86/" itemprop="url">JVM 整理</a>
-        
-    </h1>
-    <div class="article-meta columns is-variable is-1 is-multiline is-mobile is-size-7-mobile">
-        <span class="column is-narrow">
-            
-                <time datetime="2020-02-22T07:03:19.000Z" itemprop="datePublished">2月 22 2020</time>
-            
-        </span>
-        
-        <span class="column is-narrow article-category">
-            <i class="far fa-folder"></i>
-            <a class="article-category-link" href="/categories/Technology/">Technology</a>
-        </span>
-        
-        
-        <span class="column is-narrow">
-            
-            
-            20 分钟 读完 (约 3025 字)
-        </span>
-        
-    </div>
-    <div class="article-entry is-size-6-mobile" itemprop="articleBody">
-    
-        <html><head></head><body><h1 id="JVM-&#x76F8;&#x5173;&#x77E5;&#x8BC6;&#x6574;&#x7406;"><a href="#JVM-&#x76F8;&#x5173;&#x77E5;&#x8BC6;&#x6574;&#x7406;" class="headerlink" title="JVM &#x76F8;&#x5173;&#x77E5;&#x8BC6;&#x6574;&#x7406;"></a>JVM &#x76F8;&#x5173;&#x77E5;&#x8BC6;&#x6574;&#x7406;</h1><ol>
-<li>&#x5185;&#x5B58;&#x5206;&#x914D;</li>
-<li>&#x5783;&#x573E;&#x56DE;&#x6536;&#x5668;&#x7684;&#x53C2;&#x6570;&#x914D;&#x7F6E;</li>
-</ol>
-<h2 id="&#x7C7B;&#x7684;&#x52A0;&#x8F7D;"><a href="#&#x7C7B;&#x7684;&#x52A0;&#x8F7D;" class="headerlink" title="&#x7C7B;&#x7684;&#x52A0;&#x8F7D;"></a>&#x7C7B;&#x7684;&#x52A0;&#x8F7D;</h2></body></html>
-        <p class="article-more-link">
-            <a href="/2020/02/22/JVM-%E6%95%B4%E7%90%86/#more">阅读更多</a>
         </p>
     
     </div>
